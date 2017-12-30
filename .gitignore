@@ -3,6 +3,10 @@
 .project
 .settings
 
+# I don't need no stinking MKL auto update files
+MKL*
+*MKL*
+
 # Compiled Lua sources
 luac.out
 
