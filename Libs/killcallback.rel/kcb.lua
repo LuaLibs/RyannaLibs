@@ -60,6 +60,11 @@ function love.quit()
    return pressedbutton==2
 end   
 
+function love.draw()
+   (acb.draw or nothing)()
+end
+
+
 function love.update()
   ltick=true;
   (acb.update or nothing)()

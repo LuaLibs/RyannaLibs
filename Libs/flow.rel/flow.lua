@@ -18,6 +18,7 @@
   3. This notice may not be removed or altered from any source distribution.
 ]]
 -- @USE libs/killcallback
+-- @USE libs/nothing
 
 local flow = {}
 local byname = {}
@@ -40,7 +41,8 @@ function flow.set(a)
    assert(type(a),"Invalid flow type")
    currentflow = a
    currentflowname = a.name or "Unnamed"
-   acb = a
+   acb = a;
+   (a.arrive or nothing)()
 end
 
 function flow.get(a)
@@ -49,8 +51,8 @@ function flow.get(a)
 end
 
 function flow.define(name,flow)
-   assert(type(name)=='string',"string expected for the first parameter; not "+type(name))
-   assert(type(flow)=='table',"table expected for second paramters; not "+type(flow))
+   assert(type(name)=='string',"string expected for the first parameter; not "..type(name))
+   assert(type(flow)=='table',"table expected for second paramters; not "..type(flow))
    if byname[name] then flow.undef(name) end
    byname[name]=flow
 end
