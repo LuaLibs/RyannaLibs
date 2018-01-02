@@ -1,3 +1,7 @@
+# DS Store sucks
+.DS_Store
+._*
+
 # Eclipse
 .buildpath
 .project
