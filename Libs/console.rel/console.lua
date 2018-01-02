@@ -20,6 +20,7 @@
 local con = {}
 local sizes
 local stuff = {}
+local cmd = ""
 
 con.stdoutput = false -- if true, all "write" and "writeln" commands will be outputted to stdout as well.
 
@@ -54,7 +55,7 @@ function con.init()
    sizes = { w=width,h=height }
    if con.background then
       con.backquad = love.graphics.newQuad(0,0,width,height,con.background:getWidth(),con.background:getHeight())
-      con.backquad:setWrap("repeat","repeat")
+      con.background:setWrap("repeat","repeat")
    end
 end
 
@@ -96,8 +97,11 @@ function con.show() -- It goes without saying that this should only be calledin 
    end
    for st in each(stuff) do
        love.graphics.setColor(st.r,st.g,st.b)
-       love.graphics.draw(st.img)
-   end     
+       love.graphics.draw(st.img,st.x,st.y)
+   end   
+   love.graphics.setColor(255,255,255)
+   love.graphics.setFont(con.font)
+   love.graphics.print(">"..cmd.."_",0,sizes.h-20)  
 end
 
 return con
