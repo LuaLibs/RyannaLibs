@@ -1,7 +1,7 @@
 --[[
   gini is not ini.lua
   
-  version: 18.01.02
+  version: 18.01.03
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -313,3 +313,4 @@ function ReadIni(file,real)
   return ret
 end --End Function  
   
+return true
