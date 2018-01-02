@@ -53,8 +53,9 @@ end
 
 function love.quit()
    if acb.quit then return acb.quit() end
+   if quitdontask then return end
    local title = RYANNA_TITLE
-   local buttons = {"Yes","No",escapebutton=2}
+   local buttons = {"Yes","No",escapebutton=2}   
    local pressedbutton = love.window.showMessageBox(title, quitquestion, buttons)
    return pressedbutton==2
 end   
@@ -63,6 +64,11 @@ function love.update()
   ltick=true;
   (acb.update or nothing)()
 end
+
+function bye()
+   quitdontask=true
+   love.event.quit()
+end   
 
 function keyhit(key)
     local r = lkeyhit[key]
