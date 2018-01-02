@@ -1,3 +1,22 @@
+--[[
+  console.lua
+  
+  version: 18.01.02
+  Copyright (C) 2018 Jeroen P. Broks
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+]]
 local con = {}
 local sizes
 local stuff = {}
@@ -20,6 +39,13 @@ if JCR_Exists("GFX/System/Console.png") then
      local fdata = love.filesystem.newFileData(data,"GFX/System/Console.png")
      con.background = love.graphics.newImage(fdata)     
 end
+
+local function loadconfont()
+     print("Loading console font")
+     local data = JCR_B("Libs/console.rel/cfont/font.ttf")
+     local fdata = love.filesystem.newFileData(data,"Libs/console.rel/cfont/font.ttf")
+     con.font = love.graphics.newFont(fdata,15)
+end loadconfont()
 
 -- Normally you do NOT have to call this yourself, unless you change the forms and shapes of your working window, or even switch to full screen after your first call.
 -- If you don't change that after your first call to the console, you're fine.
