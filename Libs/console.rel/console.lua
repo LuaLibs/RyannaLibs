@@ -59,7 +59,7 @@ function con.init()
 end
 
 local function iin() -- init if needed
-  if not sizes then init() end
+  if not sizes then con.init() end
 end
 
 
@@ -72,8 +72,32 @@ function con.write(txt,r,g,b,x,y)
   if not(x and y) then
     con.curx=(x or con.curx)+newstuff.img:getWidth()
   end
+  if con.stdout then print('Console> '..txt) end
+  stuff[#stuff+1]=newstuff
 end
 
+function con.writeln(txt,r,g,b)
+   con.write(txt,r,g,b)
+   con.curx = 0
+   con.cury = con.cury + 20
+   if con.cury>sizes.w-20 then
+      con.cury = con.cury - 20
+      for stu in each(stuff) do
+          stu.y = stu.y - 20
+      end
+   end
+   while stuff[1].y<-40 do table.remove(stuff,1) end
+end
 
+function con.show() -- It goes without saying that this should only be calledin a "draw" callback, or things will not go as planned
+   iin()
+   if con.background then 
+      love.graphics.draw(con.background,con.backquad,0,0)
+   end
+   for st in each(stuff) do
+       love.graphics.setColor(st.r,st.g,st.b)
+       love.graphics.draw(st.img)
+   end     
+end
 
 return con
