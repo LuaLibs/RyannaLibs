@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.01.02
+  version: 18.01.03
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -46,9 +46,9 @@ function love.keyreleased(key,scan,rep)
 end
 
 function love.mousepressed(x,y,but,touched)
-  (acb.keypressed or nothing)(key,scan,rp)
-  lmousehit[key] = ( lmousehit[key] or 0 ) + 1
-  mousedown[key] = true
+  (acb.mousepressed or nothing)(but,x,y,touched)
+  lmousehit[but] = ( lmousehit[but] or 0 ) + 1
+  mousedown[but] = true
 end
 
 function love.quit()
