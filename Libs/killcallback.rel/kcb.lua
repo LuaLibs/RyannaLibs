@@ -70,6 +70,10 @@ function love.update()
   (acb.update or nothing)()
 end
 
+function love.textinput(txt)
+  (acb.textinput or nothing)(txt)
+end  
+
 function bye()
    quitdontask=true
    love.event.quit()
