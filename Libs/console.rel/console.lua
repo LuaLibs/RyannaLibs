@@ -1,7 +1,7 @@
 --[[
   console.lua
   
-  version: 18.01.02
+  version: 18.01.03
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -104,4 +104,11 @@ function con.show() -- It goes without saying that this should only be calledin 
    love.graphics.print(">"..cmd.."_",0,sizes.h-20)  
 end
 
+function con.sback() -- Just shows the loaded background if available.
+   iin()
+   if con.background then 
+      love.graphics.draw(con.background,con.backquad,0,0)
+   end
+end
+   
 return con
