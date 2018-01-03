@@ -33,13 +33,13 @@ skeydown = {}
 mousedown = {}
 
 function love.keypressed(key,scan,rep)
-  (acb.keypressed or nothing)(key,scan,rp)
+  (acb.keypressed or nothing)(key,scan,rep)
   keydown[key] = true
   skeydown[key] = true
 end
 
 function love.keyreleased(key,scan,rep)
-  (acb.keypressed or nothing)(key,scan,rp)
+  (acb.keyreleased or nothing)(key,scan,rep)
   lkeyhit[key] = ( lkeyhit[key] or 0 ) + 1 
   keydown[key] = true
   skeydown[key] = true
