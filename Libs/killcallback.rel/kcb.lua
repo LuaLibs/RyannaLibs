@@ -78,11 +78,13 @@ end
 function keyhit(key)
     local r = lkeyhit[key]
     lkeyhit[key]= nil
+    return r
  end
  
  function mousehit(but)
     local r = lmousehit[but]
     lmousehit[but]= nil
+    return r
  end
 
 
