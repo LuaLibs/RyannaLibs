@@ -32,7 +32,7 @@ function vars.D(self,tag,value)
     elseif prefixed(tag,'%') then
        if type(value)==number then     self.v[tag]=value
        else self.v[tag]=tonumber(value) or 0 end
-    elseif prefixed(tag,'%') or prefixed(tag,'_') then
+    elseif prefixed(tag,'$') or prefixed(tag,'_') then
        self.v[tag]=""..value
     else
        error("Unknown tag type: "..tag)
