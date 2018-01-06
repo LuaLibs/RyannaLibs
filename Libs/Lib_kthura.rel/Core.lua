@@ -6,21 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.05
-]]
---[[
-        Core.lua
-	(c) 2017 Jeroen Petrus Broks.
-	
-	This Source Code Form is subject to the terms of the 
-	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
-	distributed with this file, You can obtain one at 
-	http://mozilla.org/MPL/2.0/.
-        Version: 17.09.09
+        Version: 18.01.06
 ]]
 
+-- $USE libs/errortag
+
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.05")
+mkl.version("Ryanna Libraries - Core.lua","18.01.06")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -190,7 +182,7 @@ function kthura.load(amap,real,dontclass)
       script = bt:read('*all')
       bt:close()
    else
-      script = love.filesystem.read(map)
+      script = JCR_B(map) --love.filesystem.read(map)
    end
    assert( script, errortag('kthura.load',{amap,real,dontclass},"I could not read the content for the requested map"))
    local compiled = loadstring(script)
