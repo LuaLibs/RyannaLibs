@@ -130,7 +130,22 @@ local drawclass = {
        end
     
     },
-    
+    TiledArea = {
+         LoadTexture = function(o)
+            local r = genloadtexture(o)
+            for i in each(r.images) do
+                i:setWrap('repeat','repeat')
+            end
+            local iw,ih = ImageSizes(r)
+            o.QUAD = love.graphics.newQuad(0-o.INSERT.x,0-o.INSERT.y,o.SIZE.width,o.SIZE.height,iw,ih)    
+            return r
+         end,
+         draw = function(o,cx,cy)
+            animate(o)
+            ktcolor(o)
+            QuadImage(o.LoadedTexture,o.QUAD,o.COORD.x-cx,o.COORD.y-cy)
+         end
+    },
     Exit = {LoadTexture=niets,draw=niets}    
 
 }

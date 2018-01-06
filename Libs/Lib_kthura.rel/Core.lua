@@ -61,7 +61,7 @@ function kthura.remapdominance(map)
    map.dominancemap = {}
    for lay,objl in pairs(map.MapObjects) do for o in each(objl) do
        map.dominancemap[lay] = map.dominancemap[lay] or {}
-       local domstring = right("00000000000000000000"..(o.DOMINANCE or 20),5)
+       local domstring = right("00000000000000000000"..(o.DOMINANCE or 20),5)..right("00000000000000000000"..o.COORD.y,5)
        map.dominancemap[lay][domstring] = map.dominancemap[lay][domstring] or {}
        local m =map.dominancemap[lay][domstring]
        m[#m+1]=o
