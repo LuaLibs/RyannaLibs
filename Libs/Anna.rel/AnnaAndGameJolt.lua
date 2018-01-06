@@ -163,6 +163,8 @@ end
 
 local lastattempts = {}
 
+function NET_Anna() return nan end
+
 function NET_Login(gdata,udata)
      local success = true
      local results = {} 
