@@ -1,7 +1,7 @@
 --[[
   stringmapfile.lua
   
-  version: 18.01.03
+  version: 18.01.06
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,6 +21,9 @@
 -- These tags were used in the old love builder, but this has now been re set up for Ryanna.
 -- BuildLove -- *import binread
 -- BuildLove -- *import qhs 
+
+-- $USE libs/binread
+-- $USE libs/qhs
 
 function readstringmap(file)
     local bt=binread(file)
@@ -46,7 +49,7 @@ function readstringmap(file)
 end
 
 --[[
-mkl.version("Ryanna Libraries - stringmapfile.lua","18.01.03")
+mkl.version("Ryanna Libraries - stringmapfile.lua","18.01.06")
 mkl.lic    ("Ryanna Libraries - stringmapfile.lua","ZLib License")
 ]]
 
