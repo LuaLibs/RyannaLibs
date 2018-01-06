@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.01.06
+  version: 18.01.07
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -72,11 +72,18 @@ function love.draw()
   end
 end
 
+local updatefuncs = {}
 
 function love.update()
   ltick=true;
+  for f in each(updatefuncs) do f() end
   (acb.update or nothing)()
 end
+
+function addupdatedunc(f)
+    assert(type(f)=='function','updatefuncs must be functions, not '..type(f))
+    updatefuncs[#updatefuncs+1]=f
+end    
 
 function love.textinput(txt)
   (acb.textinput or nothing)(txt)
