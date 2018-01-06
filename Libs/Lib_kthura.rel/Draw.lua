@@ -6,22 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.05
-]]
---[[
-        Draw.lua
-	(c) 2017 Jeroen Petrus Broks.
-	
-	This Source Code Form is subject to the terms of the 
-	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
-	distributed with this file, You can obtain one at 
-	http://mozilla.org/MPL/2.0/.
-        Version: 17.09.09
+        Version: 18.01.06
 ]]
 
+-- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.01.05")
+mkl.version("Ryanna Libraries - Draw.lua","18.01.06")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -38,6 +29,7 @@ local function genloadtexture(o)
    loadedtextures[o.KIND] = loadedtextures[o.KIND] or {}
    local lto = loadedtextures[o.KIND]
    local tfl = o.TEXTURE:upper()
+   --print("Loading Texture: "..tfl)
    lto[tfl] = lto[tfl] or LoadImage(tfl)
    return lto[tfl]
 end
@@ -145,7 +137,8 @@ local drawclass = {
 
 
 function kthura.liobj(self) -- Load Image Object
-      local c = drawclass[self.KIND]
+     -- local c = drawclass[self.KIND]
+     local camx,camy=0
      assert(self.KIND,errortag("kthura.drawobject",{self,camx,camy}," Object has no kind"))
      local c = drawclass[self.KIND]
      assert(c,errortag("kthura.drawobject",{self,camx,camy}," kind '"..self.KIND.."' not supported in this version of the Kthura Drawing Engine"))

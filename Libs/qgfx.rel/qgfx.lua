@@ -37,6 +37,7 @@ function LoadImage(file,assign)
   local ret = { ox = 0, oy = 0, t="image", file=file,
               }
   if type(file)=='string' then
+     --print('LoadImage: ',file,assign)
      --if love.filesystem.isDirectory(file:upper()) then
      if JCR_HasDir(file) then
        -- local files = love.filesystem.getDirectoryItems( file:upper() )

@@ -28,7 +28,7 @@ function BM.Nada(d,g) return {} end
 function BM.Obstacle(d,g) 
     local ret = {}
     kthura.liobj(d)
-    local img = d.LoadedTexture[1]
+    local img = d.LoadedTexture.images[1]
     if not img then
        print("WARNING! Obstacle texture "..sval(d.TEXTURE).." was not loaded, so it won't affect the blockmap")
        return {}
