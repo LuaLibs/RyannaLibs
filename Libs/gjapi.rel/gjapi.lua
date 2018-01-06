@@ -55,8 +55,12 @@ Data Store 		|									  |
 --print("GJ_API:Loading $$mydir$$/json.lua") local json = j_love_import("$$mydir$$/json.lua") --require("JSON")
 --print("GJ_API:loading socket.http")        local http = require("socket.http")
 
--- *localimport md5
--- *localimport json
+-- -- *localimport md5
+-- -- *localimport json
+
+-- $USE libs/md5
+-- $USE libs/json
+
 local http = require('socket.http')
 
 local _ = {
