@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.01.03
+  version: 18.01.06
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,6 +18,10 @@
   3. This notice may not be removed or altered from any source distribution.
 ]]
 -- $USE libs/nothing
+
+-- $IF $IGNORE
+local love = {}
+-- $FI
 
 print("Kill Callback") -- This line is just a checkup for me.
 
@@ -61,7 +65,11 @@ function love.quit()
 end   
 
 function love.draw()
-   (acb.draw or nothing)()
+   if acb.odraw then
+      acb:odraw()
+   else
+     (acb.draw or nothing)()
+  end
 end
 
 
