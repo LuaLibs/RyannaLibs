@@ -123,6 +123,14 @@ love.graphics.draw(i.images[frame or 1],x,y,rad or 0,i.scalex or sx or 1, i.scal
 --love.graphics.pop()                   
 end 
 
+function QuadImage(img,quad,x,y,frame)
+  local i = (({ ['string'] = function() return assets[img] end,
+                ['table']  = function() return img end })[type(img)] or function() error('Unknown image tag type:'..type(img)) end)()
+  assert(i,"DrawImage("..valstr(img)..","..x..","..y..","..(frame or 1).."): I have no image for "..valstr(img))
+  assert(i.images[frame or 1] , "DrawImage("..valstr(img)..","..x..","..y..","..(frame or 1).."): Frame out of bounds - I only have "..#i.images.." frame(s)")
+  love.graphics.draw(i.images[frame or 1],quad,x,y)
+end  
+
 function ImageSizes(img)
 local i = (({ ['string'] = function() return assets[img] end,
               ['table']  = function() return img end ,
