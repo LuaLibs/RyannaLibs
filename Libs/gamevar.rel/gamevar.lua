@@ -1,7 +1,7 @@
 --[[
   gamevar.lua
   
-  version: 18.01.03
+  version: 18.01.06
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -51,6 +51,7 @@ function vars.C(self,tag)
     if prefixed(tag,"&") then
        if self.v[tag] then return 'TRUE' else return 'FALSE' end
     else
+       if not self.v[tag] then return "" end
        return self.v[tag]..""
     end 
 end    
@@ -99,6 +100,13 @@ function Dec(tag,value)
     vars:D(tag,vars:G(tag)-(value or 1))
 end
 
+function VarList()
+     local ret = ""
+     for k,v in spairs(vars.v) do
+         ret = ret .. k .. " = "..(Var.C(k) or 'ERROR! NO VALUE FOUND!')
+     end 
+     return ret
+end         
 
 local gv = { Var=Var, C=Var.C, D=Var.D,Done=Done,S=Var.S,G=Var.G, Kill=Var.Kill, Clear=Var.Clear }
 return gv
