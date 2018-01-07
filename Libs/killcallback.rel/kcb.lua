@@ -80,7 +80,7 @@ function love.update()
   (acb.update or nothing)()
 end
 
-function addupdatedunc(f)
+function addupdatefunc(f)
     assert(type(f)=='function','updatefuncs must be functions, not '..type(f))
     updatefuncs[#updatefuncs+1]=f
 end    
