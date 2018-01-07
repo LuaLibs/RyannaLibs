@@ -119,6 +119,7 @@ end
 function con.grabcmd(clean)
     local r = cmd
     if clean==nil or clean==true then cmd='' end
+    return r
 end
 
 con.grabcommand = con.grabcmd    
