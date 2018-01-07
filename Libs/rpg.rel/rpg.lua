@@ -137,6 +137,7 @@ End Rem]]
 function GrabChar(ch) -- Function GrabChar:RPGCharacter(Ch$)
     return RPGChars[ch] -- Return RPGCharacter(MapValueForKey(rpgchars,ch))
 end -- End Function
+grabchar = GrabChar
 
 --[[ Since this was deprecated, I am not gonna transfer it, but I'll let it die in stead! :P
 Type TMe ' Deprecated
@@ -475,7 +476,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   end -- End Method
   
   function api:CreateChar(char) -- Method CreateChar(Char$) -- ' BLD: Create a character (if a character already exists under that name, it will simply be deleted).
-    RPGChars[char]=NewRPGCharacer()--MapInsert RPGChars,Char,New RPGCharacter
+    RPGChars[char]=NewRPGCharacter()--MapInsert RPGChars,Char,New RPGCharacter
     ConsoleWrite ("Character '"..char.."' has been created")
   end --End Method
   
@@ -757,7 +758,7 @@ about: The database vars are part of this module, and will only return "True" if
 End Rem
 ]]
 -- $USE Libs/binread
--- $USE Libs/stringmapfile.lua
+-- $USE Libs/stringmapfile
 function RPGLoad(p1,p2) --Function RPGLoad(LoadFrom:TJCRDir,Dir$="")
 local function getfile(file,pdat)
   local data
