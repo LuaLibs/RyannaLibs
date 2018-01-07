@@ -1,7 +1,7 @@
 --[[
   console.lua
   
-  version: 18.01.03
+  version: 18.01.07
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -63,6 +63,9 @@ local function iin() -- init if needed
   if not sizes then con.init() end
 end
 
+function con.usemyfont()
+   love.graphics.setFont(con.font)
+end   
 
 function con.write(txt,r,g,b,x,y)
   iin()
@@ -103,6 +106,20 @@ function con.show() -- It goes without saying that this should only be calledin 
    love.graphics.setFont(con.font)
    love.graphics.print(">"..cmd.."_",0,sizes.h-20)  
 end
+
+function con.addcmd(text)
+   cmd = cmd .. text
+end
+
+function con.backspace()
+    if cmd=="" then return end
+    cmd = left(cmd,#cmd-1)
+end   
+
+function con.grabcmd(clean)
+    local r = cmd
+    if clean==nil or clean==true then cmd='' end
+end    
 
 function con.sback() -- Just shows the loaded background if available.
    iin()
