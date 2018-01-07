@@ -1,7 +1,7 @@
 --[[
   binread.lua
   Bin Read
-  version: 18.01.03
+  version: 18.01.07
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 
 --[[ -- *import mkl_version
 
-mkl.version("Ryanna Libraries - binread.lua","18.01.03")
+mkl.version("Ryanna Libraries - binread.lua","18.01.07")
 mkl.lic    ("Ryanna Libraries - binread.lua","ZLib License")
 ]]
 
@@ -51,6 +51,9 @@ local function gstring(d,l)
     return ret
 end
 
+local function gbool(d) return d:getbyte()~=0 end
+
+
 local function dseek(d,pos)
     assert(pos<#d.data,"Seeking beyond EOF")
     d.pos = pos
@@ -60,12 +63,16 @@ local function deof(d)
     return d.pos>=#d.data
 end
 
-return function(file)
+return function(file,pure)
     local ret = {}
     --[[ Original line in the original love builder, but Ryanna requires a different approach
     ret.data = love.filesystem.read(upper(file)); assert(ret.data,"binread('"..file.."'): file not read")
     ]]
-    ret.data = JCR_B(file) ; assert(ret.data,"binread('"..file.."'): file not read") -- <- And this is how Ryanna handles it!    
+    if pure then
+      ret.data=file
+    else 
+      ret.data = JCR_B(file) ; assert(ret.data,"binread('"..file.."'): file not read") -- <- And this is how Ryanna handles it!
+    end    
     ret.pos  = 0
     ret.size = #ret.data
     ret.getbyte = gbyte
@@ -73,6 +80,7 @@ return function(file)
     ret.getint = gint
     ret.getlong = glong
     ret.getstring = gstring
+    ret.getbool = gbool
     ret.seek = dseek
     ret.eof = deof
     return ret
