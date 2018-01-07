@@ -63,6 +63,10 @@ local function iin() -- init if needed
   if not sizes then con.init() end
 end
 
+local function mybackground()
+   return con.background
+end   
+
 function con.usemyfont()
    love.graphics.setFont(con.font)
 end   
