@@ -119,7 +119,9 @@ end
 function con.grabcmd(clean)
     local r = cmd
     if clean==nil or clean==true then cmd='' end
-end    
+end
+
+con.grabcommand = con.grabcmd    
 
 function con.sback() -- Just shows the loaded background if available.
    iin()
