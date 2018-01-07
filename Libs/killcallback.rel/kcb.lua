@@ -45,8 +45,8 @@ end
 function love.keyreleased(key,scan,rep)
   (acb.keyreleased or nothing)(key,scan,rep)
   lkeyhit[key] = ( lkeyhit[key] or 0 ) + 1 
-  keydown[key] = true
-  skeydown[key] = true
+  keydown[key] = false
+  skeydown[key] = false
 end
 
 function love.mousepressed(x,y,but,touched)
