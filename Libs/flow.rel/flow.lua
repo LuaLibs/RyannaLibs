@@ -1,7 +1,7 @@
 --[[
   flow.lua
   Flow
-  version: 18.01.02
+  version: 18.01.07
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -61,6 +61,10 @@ function flow.undef(name)
     libdestroy(byname[name])
     byname[name]=nil
 end
+
+function flow.exists(name)
+   return byname[name]~=nil
+end   
 
 function flow.use(one,two) -- if two is unset the name of the file will be the name of the flow
     if two==nil then
