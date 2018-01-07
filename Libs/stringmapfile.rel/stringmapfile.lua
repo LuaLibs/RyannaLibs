@@ -1,7 +1,7 @@
 --[[
   stringmapfile.lua
   
-  version: 18.01.06
+  version: 18.01.07
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,11 +22,12 @@
 -- BuildLove -- *import binread
 -- BuildLove -- *import qhs 
 
+-- $USE libs/binwrite
 -- $USE libs/binread
 -- $USE libs/qhs
 
-function readstringmap(file)
-    local bt=binread(file)
+function readstringmap(file,pure)
+    local bt=binread(file,pure)
     local ret = {}
     local tag,factor,k,v
     repeat
@@ -48,8 +49,19 @@ function readstringmap(file)
     until false    
 end
 
+function writestringmap(smap,file,real)
+    local bt=binwrite(file,real)
+    for k,v in spairs(smap) do
+        bt:putbyte(1)
+        bt:writestring(k)
+        bt:writestring(v)
+    end
+    bt:putbyte(0xff)
+    bt:close()
+end        
+
 --[[
-mkl.version("Ryanna Libraries - stringmapfile.lua","18.01.06")
+mkl.version("Ryanna Libraries - stringmapfile.lua","18.01.07")
 mkl.lic    ("Ryanna Libraries - stringmapfile.lua","ZLib License")
 ]]
 
