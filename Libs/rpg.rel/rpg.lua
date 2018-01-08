@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.01.07
+  version: 18.01.08
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -264,25 +264,26 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   End Method
   ]] 
   
-  function api:Stat(Char,Stat,nomod) -- Method Stat(Char$,Stat$,nomod=0) -- ' BLD: Returns the stat value
+  function api:Stat(char,stat,nomod) -- Method Stat(Char$,Stat$,nomod=0) -- ' BLD: Returns the stat value
    local ch=grabchar(char) -- ):RPGCharacter = grabchar(char)
    local csr=""
    local lua = ".lua"
    assert ( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char.."\nStat="..stat)
-   local st = ch.Stat(stat) -- :RPGStat = ch.stat(stat)
+   local st = ch:Stat(stat) -- :RPGStat = ch.stat(stat)
    assert(st  ,"Stat doesn't exist\nRPGChar.Stat\nchar="..char.."\nStat="..stat)
    if st.ScriptFile and st.ScriptFile~="" and st.CallFunction and (not RPG_IgnoreScripts) then 
     --Me.Char = Char
     --Me.Stat = Stat
     csr = "CHARSTAT:"..upper(st.ScriptFile)
     if suffixed(st.ScriptFile:upper(),".LUA") then  lua="" end   
-    if not GALE_MS[csr] then GALE_MS=Use((RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile) end -- If Not GALE_MS.ContainsScript(csr) GALE_MS.Load(csr,RPGJCRDIR+st.Scriptfile+lua)
+    if not GALE_MS[csr] then GALE_MS[csr]=Use((RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile) end -- If Not GALE_MS.ContainsScript(csr) GALE_MS.Load(csr,RPGJCRDIR+st.Scriptfile+lua)
     assert( GALE_MS[csr] , (RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.Scriptfile..lua.." not loaded correctly!")
-    GALE_MS[csr][st.CallFunction]() --GALE_MS_Run csr,st.callfunction,[Char,Stat]
+    return GALE_MS[csr][st.CallFunction](char,stat) --GALE_MS_Run csr,st.callfunction,[Char,Stat]
     -- Me = New TMe
    end--  EndIf   
-   if nomod then nomodint=0 else monodint=1 end 
-   return st.value + (st.modifier * nomodint)
+   local nomodint
+   if nomod then nomodint=0 else nomodint=1 end 
+   return st.Value + (st.Modifier * nomodint)
   end -- End Method
   
   function api:SafeStat(Char,Stat,nomod) -- Method SafeStat(Char$,Stat$,nomod=0) -- ' BLD: Returns the stat value, but would the normal Stat() method crash the game if a character or stat does not exist, this one will then return 0
@@ -294,8 +295,8 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   function api:DefStat(char,stat,avalue,OnlyIfNotExist) -- Method DefStat(char$,Stat$,value=0,OnlyIfNotExist=0) -- ' BLD: Defines a value. Please note that if a stat is scripted the scripts it refers to will always use this feature itself to define the value. If "OnlyIfNotExist" is checked to 1 or any higher number than that, the definition only takes place of the stat doesn't exist yet. This was a safety precaution if you want to add stats later without destroying the old data if it exists, but to create it if you added a stat which was (logically) not yet stored in older savegames.
    local ch = grabchar(char)
    local value=avalue or 0
-   assert( ch , "Character doesn't exist\nRPGChar.DefStat\nchar="..char.."\nStat="+sta.."\nValue="..value)
-   local st = ch.stat(stat)
+   assert( ch , "Character doesn't exist\nRPGChar.DefStat\nchar="..char.."\nStat="..stat.."\nValue="..value)
+   local st = ch:Stat(stat)
    if not (ch.Stats[stat]) then
     st = NewRPGStat()
     ch.Stats[stat]=st --MapInsert ch.Stats,stat,st
@@ -346,7 +347,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    local ch = grabchar(char)
    assert ( ch,"Character doesn't exist\nRPGChar.ScriptStat\nchar="..char)
    local st = ch:Stat(stat)
-   if not st then error("Stat doesn't exist\nRPGChar.ScriptStat\nChar="..char.."\nStat.."..stat) end
+   if not st then error("Stat doesn't exist\nRPGChar.ScriptStat\nChar="..char.."\nStat="..stat) end
     st.Scriptfile = script
     st.CallFunction = func
     -- Print -- ?? 
@@ -617,7 +618,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
       if not ch.Points[points] then return nil end -- Null ' value 255 is not documented as it's used internally, and usage in Lua would most likely lead to crashes without a proper error message.  
     end -- End Select
    local p=ch.Points[points] --p:RPGPoints = RPGPoints(MapValueForKey(ch.points,points))
-   assert(p,"Points could not be retrieved\nRPGChar.Points\nChar="..char.."\nPoints="..points.."\nDoCreate"..docreate)
+   assert(p,"Points could not be retrieved\nRPGChar.Points\nChar="..char.."\nPoints="..points.."\nDoCreate"..sval(docreate))
    --'Print "Points call: "+char+","+Points+","+DoCreate+";     p.Have="+p.have+"; p.Maximum="+p.Maximum+"; p.maxcopy="+p.MaxCopy
    if p.MaxCopy and p.MaxCopy~="" then
       p.Maximum = self:Stat(char,p.MaxCopy)
