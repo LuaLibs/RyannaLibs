@@ -1,7 +1,7 @@
 --[[
   console.lua
   
-  version: 18.01.07
+  version: 18.01.08
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -88,7 +88,7 @@ function con.writeln(txt,r,g,b)
    con.write(txt,r,g,b)
    con.curx = 0
    con.cury = con.cury + 20
-   if con.cury>sizes.w-20 then
+   if con.cury>sizes.h-40 then
       con.cury = con.cury - 20
       for stu in each(stuff) do
           stu.y = stu.y - 20
