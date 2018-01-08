@@ -277,8 +277,9 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
     csr = "CHARSTAT:"..upper(st.ScriptFile)
     if suffixed(st.ScriptFile:upper(),".LUA") then  lua="" end   
     if not GALE_MS[csr] then GALE_MS[csr]=Use((RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile) end -- If Not GALE_MS.ContainsScript(csr) GALE_MS.Load(csr,RPGJCRDIR+st.Scriptfile+lua)
-    assert( GALE_MS[csr] , (RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.Scriptfile..lua.." not loaded correctly!")
-    return GALE_MS[csr][st.CallFunction](char,stat) --GALE_MS_Run csr,st.callfunction,[Char,Stat]
+    assert( GALE_MS[csr] , (RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile..lua.." not loaded correctly!")
+    assert( GALE_MS[csr][st.CallFunction], "Function "..st.CallFunction.." not found!\ncsr="..csr.."\nChar="..char.."\nStat="..stat)
+    return  GALE_MS[csr][st.CallFunction](char,stat) --GALE_MS_Run csr,st.callfunction,[Char,Stat]
     -- Me = New TMe
    end--  EndIf   
    local nomodint
@@ -348,7 +349,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    assert ( ch,"Character doesn't exist\nRPGChar.ScriptStat\nchar="..char)
    local st = ch:Stat(stat)
    if not st then error("Stat doesn't exist\nRPGChar.ScriptStat\nChar="..char.."\nStat="..stat) end
-    st.Scriptfile = script
+    st.ScriptFile = script
     st.CallFunction = func
     -- Print -- ?? 
   end -- End Method
