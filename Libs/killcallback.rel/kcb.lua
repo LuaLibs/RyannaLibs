@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.01.07
+  version: 18.01.09
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -120,6 +120,26 @@ function tick()
     local r = ltick
     ltick = false
     return r
+end
+
+-- Generates a manual events.
+-- All callback functions are called if applicable.
+-- Of course this does NOT count for draw and update, as those are not event based.
+function manualevent()
+  -- Process events.
+    if love.event then
+      love.event.pump()
+      for name, a,b,c,d,e,f in love.event.poll() do
+        if name == "quit" then
+          if not love.quit or not love.quit() then
+            return a
+          end
+        end
+        love.handlers[name](a,b,c,d,e,f)
+      end
+    end
+-- The code in this function is copied from the original love lua scrips
+-- Should only be used when you truly know what you are doing.    
 end
 
 return true
