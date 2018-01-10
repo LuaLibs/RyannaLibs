@@ -1,7 +1,7 @@
 --[[
   optional music.lua
   
-  version: 18.01.04
+  version: 18.01.10
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -52,6 +52,7 @@ function o.play(file)
    assert(s,m)
    if mozart then love.audio.stop(mozart) end
    mozart = love.audio.newSource(swapmus)
+   mozart:setLooping(true)
    love.audio.play(mozart)
    o.playing=upper(file)
 end
