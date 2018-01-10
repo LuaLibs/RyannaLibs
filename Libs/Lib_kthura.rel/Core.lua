@@ -83,14 +83,18 @@ function kthura.serialblock(map,layer) -- Returns a list of strings, giving a gl
   local h=0
   local ks,kw,kh
   local ret ={}
+  kthura.buildblockmap(map)
+  --print ( "DEBUG: SERIAL BLOCK CALL")
+  --print( serialize("BLOCKMAP",map.blockmap) )
   for k,v in pairs(map.blockmap) do
       ks = mysplit(k,",")
       kw = tonumber(ks[1]) or 0
       kh = tonumber(ks[2]) or 0
       if kw>w then w=kw end
       if kh>h then h=kh end
+      print(k)
   end
-  for y=0,kh do for x=0,kw do
+  for y=0,h do for x=0,w do
       ret[y] = ret[y] or ""
       if map.blockmap[x..","..y] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
   end end
@@ -99,13 +103,21 @@ end
 
 function kthura.buildblockmap(map)
   local p = {{b=true, f='IMPASSIBLE'},{b=false, f="FORCEPASSIBLE"}}  
+  local debug = false
+  local dchat = function(txt) if debug then print("BUILD KTHURA BLOCKMAP: "..txt) if console then console.write("BUILD KTHURA BLOCKMAP: ",180,0,255) console.writeln(txt,255,255,0) end end end
   map.blockmap = {}    
-  for pi in each(p) do for lay,objl in pairs(map.MapObjects) do local g = mysplit(map.Grid[lay],"x") local gx = tonumber(g[1]) or 1 local gy = tonumber(g[2]) or 1 local grd={x=gx,y=gy} or 1 for o in each(objl) do
-      if o[pi.f] then
-         local serie = (BM[o.KIND] or BM.Nada)(o,grd)
-         for c in each(serie) do map.blockmap[c]=p.b end
-      end
-  end end end
+  for pi in each(p) do for lay,objl in pairs(map.MapObjects) do 
+      dchat(pi.f.." "..lay)
+      local g = mysplit(map.Grid[lay],"x") 
+      local gx = tonumber(g[1]) or 1 local gy = tonumber(g[2]) or 1 
+      local grd={x=gx,y=gy} --or 1 
+      for o in each(objl) do
+         if o[pi.f] then
+           local serie = (BM[o.KIND] or BM.Nada)(o,grd)
+           for c in each(serie) do map.blockmap[c]=pi.b end
+         end
+      end   
+  end end 
 end
 
 function kthura.makeobjectclass(kthuraobject)
