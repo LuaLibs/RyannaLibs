@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.06
+        Version: 18.01.10
 ]]
 
 -- $USE libs/errortag
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.06")
+mkl.version("Ryanna Libraries - Core.lua","18.01.10")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -78,9 +78,28 @@ function kthura.map_block(map,layer,x,y)
    return map.blockmap[cx..","..cy]
 end   
 
+function kthura.serialblock(map,layer) -- Returns a list of strings, giving a global idea of the blockmap. Only meant for debugging purposes.
+  local w=0
+  local h=0
+  local ks,kw,kh
+  local ret ={}
+  for k,v in pairs(map.blockmap) do
+      ks = mysplit(k,",")
+      kw = tonumber(ks[1]) or 0
+      kh = tonumber(ks[2]) or 0
+      if kw>w then w=kw end
+      if kh>h then h=kh end
+  end
+  for y=0,kh do for x=0,kw do
+      ret[y] = ret[y] or ""
+      if map.blockmap[x..","..y] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
+  end end
+  return ret,w,h
+end  
+
 function kthura.buildblockmap(map)
   local p = {{b=true, f='IMPASSIBLE'},{b=false, f="FORCEPASSIBLE"}}  
-  map.blockmap = {}  
+  map.blockmap = {}    
   for pi in each(p) do for lay,objl in pairs(map.MapObjects) do local g = mysplit(map.Grid[lay],"x") local gx = tonumber(g[1]) or 1 local gy = tonumber(g[2]) or 1 local grd={x=gx,y=gy} or 1 for o in each(objl) do
       if o[pi.f] then
          local serie = (BM[o.KIND] or BM.Nada)(o,grd)
