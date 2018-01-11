@@ -194,7 +194,7 @@ function actorclass:WalkTo(a1,a2)
     end         
     ]]
     local parent=self.PARENT
-    parent.pathfinder = parent.pathfinder or Pathfinder(self.jumpergrid, kthura.searcher, 0)
+    parent.pathfinder = parent.pathfinder or PathFinder(self.jumpergrid, kthura.searcher, 0)
     self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
 end
 
