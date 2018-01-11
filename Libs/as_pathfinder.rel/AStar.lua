@@ -239,6 +239,7 @@ if WalkableDebug then WalkAbilityDebug() end
 		if 2*u+1 <= numberOfopenlistItems then -- 'if both children exist
 		 	--'Check if the F cost of the parent is greater than each child.
 			--'Select the lowest of the two children.	
+			--print(serialize('fCost',fCost),"\n"..serialize('openlist',openlist),"\n",u)
 			if fCost[openlist[u]] >= fCost[openlist[2*u]]   then v = 2*u   end
 			if fCost[openlist[v]] >= fCost[openlist[2*u+1]] then v = 2*u+1 end
 		else
@@ -326,11 +327,11 @@ if WalkableDebug then WalkAbilityDebug() end
 		]]
 		while m ~= 1 do -- 'While item hasn't bubbled to the top (m=1)	
 			--'Check if child's F cost is < parent's F cost. If so, swap them.	
-			if (fCost[openlist[m]] or 0) <= (fCost[openlist[m/2]] or 0) then
+			if (fCost[openlist[m]] or 0) <= (fCost[openlist[math.floor(m/2)]] or 0) then
 				temp = openlist[m/2]
-				openlist[m/2] = openlist[m]
+				openlist[math.floor(m/2)] = openlist[m]
 				openlist[m] = temp
-				m = m/2
+				m = math.floor(m/2)
 			else
 				break --Exit
 			end --End If
@@ -375,11 +376,11 @@ if WalkableDebug then WalkAbilityDebug() end
 				m = x
 				while m ~= 1 do --'While item hasn't bubbled to the top (m=1)	
 					--'Check if child is < parent. If so, swap them.	
-					if fCost[openlist[m]] < fCost[openlist[m/2]] then
+					if (fCost[openlist[m]] )<= (fCost[openlist[math.floor(m/2)]] ) then -- BlitzMax assumes all undefined integers to be 0. Lua everything undefined is 'nil'. I cannot count on it stuff is defined. 
 						temp = openlist[m/2]
 						openlist[m/2] = openlist[m]
 						openlist[m] = temp
-						m = m/2
+						m = math.floor( m/2 ) -- In Blitz m was an int. Lua doesn't know that type, so let's help it to keep it an int!
 					else
 						break --'Exit 'while/wend
 					end --End If

@@ -126,7 +126,7 @@ end --End Function
 --bbdoc: How long is the path?
 --End Rem
 function LengthWay(PFU) --(:PathFinderUnit)
-return PFU.PathLength
+   return PFU.PathLength
 end --End Function
 
 --
