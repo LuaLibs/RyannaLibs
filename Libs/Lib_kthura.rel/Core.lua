@@ -21,6 +21,7 @@ kthura ={}
 -- $FI  
 
 
+kthura.searcher='dijkstra' -- For now the default searcher. I just had to pick one ;)
 
 local BM={}
 
