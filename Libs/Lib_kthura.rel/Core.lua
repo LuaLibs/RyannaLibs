@@ -120,6 +120,7 @@ function kthura.buildblockmap(map)
          end
       end   
   end end 
+  map.jumpergrid = t2Grid(map.blockmap)
 end
 
 function kthura.makeobjectclass(kthuraobject)
