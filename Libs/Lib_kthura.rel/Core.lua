@@ -178,10 +178,11 @@ function actorclass:WalkTo(a1,a2)
          local map=self.PARENT
          local o=map.TagMap[self.LAYER][a1]
          assert(o,"Trying to walk to non-existent object tag: "..a1)
-         x,y=o.COORD.x,o.COORD.y
+         x,y=math.floor(o.COORD.x/32),math.floor(o.COORD.y/32)
     else
          error("<actor>.WalkTo(<map>,"..sval(a1)..","..sval(a2).."): Invalid input!")
     end
+    --[[ This is a reference to code that is now officially deprecated!
     local p = FindTheWay(self.COORD.x,self.COORD.y,x,y)
     if p.Success then
         self.walkspot=0
@@ -191,6 +192,10 @@ function actorclass:WalkTo(a1,a2)
         self.WalkY = y
         self.Pathlength = LengthWay(p)
     end         
+    ]]
+    local parent=self.PARENT
+    parent.pathfinder = parent.pathfinder or Pathfinder(self.jumpergrid, kthura.searcher, 0)
+    self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
 end
 
 function actorclass:MoveTo(a,b,c)
