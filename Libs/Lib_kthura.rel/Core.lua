@@ -46,7 +46,7 @@ end
 function BM.Zone(d,g)
     local ret = {}
     local temp = {}
-    for ix=d.COORD.x,d.COORD.x+d.SIZE.width do for iy=d.COORD.y,d.COORD.y+d.SIZE.height do
+    for ix=d.COORD.x,d.COORD.x+(d.SIZE.width-1) do for iy=d.COORD.y,d.COORD.y+(d.SIZE.height-1) do
         local gx = math.floor(ix/g.x)
         local gy = math.floor(ix/g.y)
         local s  = gx..","..gy
@@ -55,6 +55,7 @@ function BM.Zone(d,g)
     end end
     return ret
 end    
+BM.TiledArea=BM.Zone
 
 
 function kthura.remapdominance(map)
@@ -83,7 +84,7 @@ function kthura.serialblock(map,layer) -- Returns a list of strings, giving a gl
   local h=0
   local ks,kw,kh
   local ret ={}
-  kthura.buildblockmap(map)
+  --kthura.buildblockmap(map)
   --print ( "DEBUG: SERIAL BLOCK CALL")
   --print( serialize("BLOCKMAP",map.blockmap) )
   for k,v in pairs(map.blockmap) do
@@ -128,9 +129,10 @@ end
 function kthura.makeclass(map)
      for lay,objl in pairs(map.MapObjects) do for o in each(objl) do kthura.makeobjectclass(o) end end
      map.draw = kthura.drawmap
-     map.remapdominance = kthura.remapdominance(map)
-     map.buildblockmap = kthura.buildblockmap(map)
+     map.remapdominance = kthura.remapdominance --(map)
+     map.buildblockmap = kthura.buildblockmap --(map)
      map.block = kthura.map_block
+     map.obj = kthura.obj
 end
 
 function kthura.remaptags(map)
@@ -152,11 +154,64 @@ function kthura.remaptags(map)
   end
 end
 
+function kthura.obj(map,layer,objtag,musthave)
+      local tm = map.TagMap
+      local ltm=tm[layer]; assert(ltm,"Layer '"..layer.."' doesn't exist!")
+      local ret=ltm[objtag]; if musthave then assert(ret,"Object tag '"..objtag.."' doesn't exist!") end
+      return ret
+end      
+      
 function kthura.remapall(map)
     kthura.remapdominance(map)
     kthura.remaptags(map)
     kthura.buildblockmap(map)
 end
+
+local actorclass={}
+
+function actorclass:WalkTo(a1,a2)
+    local x,y
+    if     type(a1)=='number' and type(a2)=='number' then x,y=a1,a2 
+    elseif type(a1)=='string' and type(a2)==nil      then
+         local map=self.PARENT
+         local o=map.TagMap[self.LAYER][a1]
+         assert(o,"Trying to walk to non-existent object tag: "..a1)
+         x,y=o.COORD.x,o.COORD.y
+    else
+         error("<actor>.WalkTo(<map>,"..sval(a1)..","..sval(a2).."): Invalid input!")
+    end
+    local p = FindTheWay(self.COORD.x,self.COORD.y,x,y)
+    if p.Success then
+        self.walkspot=0
+        self.FoundPath = p
+        self.walking = true
+        self.WalkX = x
+        self.WalkY = y
+        self.Pathlength = LengthWay(p)
+    end         
+end
+
+function actorclass:MoveTo(a,b,c)
+  local TX,TY,TIgnoreBlocks
+  if type(a)=='number' and type(b)=='number' then
+     TX,TY,TIgnoreBlocks=a,b,c==true
+  elseif type(a)=="string" then
+     TIgnoreBlocks=b==true
+     local map=self.PARENT
+     local o=map.TagMap[self.LAYER][a]
+     assert(o,"Trying to move to non-existent object tag: "..a1)
+     TX,TY=o.COORD.x,o.COORD.y
+  end   
+  self.moving = true
+  self.MoveX = TX
+  self.MoveY = TY
+  self.MoveIgnoreBlock = TIgnoreBlocks
+end 
+  
+
+  
+
+
 
 function kthura.Spawn(map,layer,spot,tag,xdata)
     local x,y
@@ -190,15 +245,53 @@ function kthura.Spawn(map,layer,spot,tag,xdata)
     actor.FORCEPASSIBLE = false
     actor.SCALE = { x = 1000, y = 1000 } 
     actor.BLEND = 0
+    actor.LAYER = layer -- Needed for typical actor stuff  
+    actor.PARENT=map
     kthura.makeobjectclass(actor)
+    for k,v in pairs(actorclass) do actor[k]=v end -- Adding the actor methods to the actor
     for k,v in pairs(xdata or {}) do actor[k] = v end
     kthura.remapall(map)
     return actor
 end
 kthura.spawn=kthura.Spawn
 
-
-
+-- Frees the map
+-- This MUST always be done, as Kthura map tables DO contain cyclic references that must be un-referenced or due to bugs in the Lua garbage collector you'll get memory leaks.
+function kthura.Free(map)
+    local debug = true
+    local layers = {}    
+    map.MapObects = map.MapObjects or {} -- Crash prevention
+    map.TagMap = map.TagMap or {} -- Crash prevention
+    for layername,layer in pairs(map.MapObjects) do
+        layers[#layers]=layername
+        if debug then print("Releasing objects in layer: "..layername) end
+        local size = #layer
+        for obj in each(layer) do            
+            obj.PARENT=nil 
+        end
+        for o=1,size do
+            if debug then print("= Releasing object #"..o) end 
+            layer[o]=nil 
+        end
+    end   
+    for layername,layer in pairs(map.TagMap) do
+        local tm = {}
+        for k,_ in pairs(map.TagMap[layername]) do tm[#tm+1]= k end
+        for k in each(tm) do 
+            if debug then print("= Releasing tag "..k) end
+            map.TagMap[layername]=nil 
+        end
+    end    
+    for killlayer in each(layers) do
+        map.MapObjects[killlayer]=nil
+        map.TagMap[killlayer]=nil
+    end 
+    local others = {}
+    for k,_ in pairs(map) do others[#others+1]=k end
+    for k in each(others) do map[k]=nil end 
+    -- Only an empty table remains ;)
+end
+kthura.free=kthura.Free
 
 -- Please note, only maps exported in Lua format can be read.
 -- No pure Kthura Maps. This to save resources on Lua engines such as Love
@@ -223,3 +316,10 @@ function kthura.load(amap,real,dontclass)
    kthura.remapdominance(ret)
    return ret   
 end
+
+function kthura.loadto(map,amap,real,dontclass)
+    assert(map,"LoadTo can only be used with an existing table!!!")
+    kthura.Free(map)
+    local tempmap = kthura.load(amap,real,dontclass)
+    for k,d in each(tempmap) do map[k]=d end
+end    

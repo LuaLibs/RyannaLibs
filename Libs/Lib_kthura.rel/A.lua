@@ -9,7 +9,8 @@
         Version: 18.01.10
 ]]
 
--- $USE libs/as_pathfinder
+-- //$USE libs/as_pathfinder
+-- $USE libs/yonaba_jumper
 
 kthura = {}
 
