@@ -1,0 +1,19 @@
+[rem]
+
+This library works differently from what is regular for Ryanna.
+That is because Ryanna normally uses a structure that not all libraries and engines may be compatible with.
+
+This file will therefore have to take over.
+
+[vars]
+require=getitall.lua
+
+[list:FILES]
+getitall.lua
+
+[list:PUREDIRS]
+jumper
+
+[list:BUILDNOTES]
+Jumper is a special library.
+If you use it your project may NOT have the /jumper folder present as jumper needs it for its own and conflicts then arise if you have one!
