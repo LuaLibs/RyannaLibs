@@ -1,7 +1,7 @@
 --[[
   bank.lua
   
-  version: 18.01.10
+  version: 18.01.11
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -31,7 +31,7 @@
 --[[
 -- *import prefsuf
 
-mkl.version("Ryanna Libraries - bank.lua","18.01.10")
+mkl.version("Ryanna Libraries - bank.lua","18.01.11")
 mkl.lic    ("Ryanna Libraries - bank.lua","ZLib License")
 ]]
 
