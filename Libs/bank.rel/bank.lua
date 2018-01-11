@@ -35,17 +35,23 @@ mkl.version("Ryanna Libraries - bank.lua","18.01.10")
 mkl.lic    ("Ryanna Libraries - bank.lua","ZLib License")
 ]]
 
+local function len(a) return #a end -- Easier this way, as the system calls to a deprecated function, which is removed from my workspace by now.
+
 local function LOADBANKTYPES()
   local list = JCR_GetDir('libs/bank.rel') --love.filesystem.getDirectoryItems( "$$mydir$$" )
   local ret = {}
+  print("Loading Bank Types")
+  print("Types found: "..#list)
   for f in each(list) do
-    local gn = upper(f)
-    if prefixed(f,"TYPE_") and suffixed(f,".LUA") then
+    local gn = StripDir(f):upper()
+    if prefixed(gn,"TYPE_") and suffixed(gn,".LUA") then
        gn = left(gn,len(gn)-4)
        gn = right(gn,len(gn)-5)
        gn = replace(gn,"__IGNORE","")
        print("Initating banktype: "..gn)
-       ret[gn]=Use("libs/bank.rel/"..f)
+       ret[gn]=Use(f)
+    else
+       print("Ignoring nontype: "..f)   
     end
   end
   return ret
