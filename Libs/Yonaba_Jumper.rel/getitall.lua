@@ -77,7 +77,7 @@ PathFinder=require("jumper.pathfinder")
 
 -- These two lines have to protect this library for later overwriting of routines
 local Y_Grid=Grid
-local Y_Path=Pathfinder
+local Y_Path=PathFinder
 
 function t2tab_to_2dtab(t,subnil)
      local ret = {}
@@ -101,7 +101,7 @@ function t2tab_to_2dtab(t,subnil)
 end
 
 function t2Grid(t,subnil)
-    local tb=t2tab_to2dtab(t,subnil or '**BOOLNUM**')
+    local tb=t2tab_to_2dtab(t,subnil or '**BOOLNUM**')
     return Y_Grid(tb)
 end
 
