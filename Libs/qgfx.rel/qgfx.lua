@@ -85,7 +85,10 @@ function LoadImage(file,assign)
   return ret
 end
 
-             
+function Mark(x,y)
+   Line(x-5,y,x+5,y)
+   Line(x,y-5,x,y+5)
+end             
 
 function LangFont(langarray)
 -- // content comes later

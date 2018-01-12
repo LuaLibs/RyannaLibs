@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.11
+        Version: 18.01.12
 ]]
 
 -- $USE libs/errortag
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.11")
+mkl.version("Ryanna Libraries - Core.lua","18.01.12")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -45,6 +45,7 @@ function BM.Obstacle(d,g)
     return ret
 end
 function BM.Zone(d,g)
+    --[[
     local ret = {}
     local temp = {}
     for ix=d.COORD.x,d.COORD.x+(d.SIZE.width-1) do for iy=d.COORD.y,d.COORD.y+(d.SIZE.height-1) do
@@ -54,6 +55,29 @@ function BM.Zone(d,g)
         if not temp[s] then ret[#ret+1]=s end
         temp[s]=true
     end end
+    return ret]]
+    local Floor=math.floor
+    local Ceil=math.ceil
+    local W=d.SIZE.width
+    local H=d.SIZE.height
+    local X=d.COORD.x
+    local Y=d.COORD.y
+    local GW,GH=32,32
+    local TX = Floor(X/GW)
+    local TY = Floor(Y/GH)            
+    local TW = Ceil((X+W)/GW)
+    local TH = Ceil((Y+H)/GH)
+    local s
+    local temp = {}
+    local ret = {}
+    -- Print "DEBUG: Blockmapping area ("+TX+","+TY+") to ("+TW+","+TH+")"
+    for AX=TX , TW do
+        for AY=TY , TH do
+            --Blockmap[ax,ay]=True
+            s = AX..","..AY
+            if not temp[s] then ret[#ret+1] = s end temp[s]=true 
+        end --    Next
+    end --      Next
     return ret
 end    
 BM.TiledArea=BM.Zone
@@ -135,9 +159,10 @@ function kthura.serialblock(map,layer) -- Returns a list of strings, giving a gl
       if kh>h then h=kh end
       print(k)
   end
-  for y=0,h do for x=0,w do
+  for oy=0,h do for x=0,w do
+      local y=oy+1
       ret[y] = ret[y] or ""
-      if map.blockmap[x..","..y] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
+      if map.blockmap[x..","..oy] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
   end end
   return ret,w,h
 end  
@@ -224,6 +249,7 @@ function actorclass:WalkTo(a1,a2)
     else
          error("<actor>.WalkTo(<map>,"..sval(a1)..","..sval(a2).."): Invalid input!")
     end
+    if x==0 or y==0 then return false end
     --[[ This is a reference to code that is now officially deprecated!
     local p = FindTheWay(self.COORD.x,self.COORD.y,x,y)
     if p.Success then
@@ -238,13 +264,15 @@ function actorclass:WalkTo(a1,a2)
     local parent=self.PARENT
     parent.pathfinder = parent.pathfinder or PathFinder(parent.jumpergrid, kthura.searcher, 0)
     self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
+    if not self.path then return false end -- pathfinding failed
     self.nodes ={}
     self.node=1
     for node, count in self.path:nodes() do
         self.nodes[count]={x=node:getX(),y=node:getY()}
     end
     self.walking = true
-    print ( serialize('nodes',self.nodes))    
+    -- print ( serialize('nodes',self.nodes))    
+    return true
 end
 
 function actorclass:MoveTo(a,b,c)

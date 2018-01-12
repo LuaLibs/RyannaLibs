@@ -1,7 +1,7 @@
 --[[
   getitall.lua
   
-  version: 18.01.11
+  version: 18.01.12
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 ]]
+
 ---------------------------------------------
 -- This file will only act as the 'glue'   --
 -- between Ryanna and Jumper. I needed     --
