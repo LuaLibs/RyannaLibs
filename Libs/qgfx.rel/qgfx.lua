@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.01.10
+  version: 18.01.12
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.01.10")
+mkl.version("Ryanna Libraries - qgfx.lua","18.01.12")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -47,27 +47,30 @@ function LoadImage(file,assign)
        local i,w,h
        for f in each(files) do
            --i = love.graphics.newImage(upper(file.."/"..f))
-           i = love.graphics.newImage(JCR_D(f))           
-           if i then 
-              l[#l+1]=i
-              w = w or i:getWidth()
-              h = h or i:getHeight()
-              if w~=w or h~=h then return end 
+           if not suffixed(f:upper(),"HOTSPOTS.GINI") then
+              i = love.graphics.newImage(JCR_D(f))           
+              if i then 
+                 l[#l+1]=i
+                 w = w or i:getWidth()
+                 h = h or i:getHeight()
+                 if w~=w or h~=h then return end
+              end    
            end
        end
        if #l==0 then return end
        --if love.filesystem.isFile(file:upper().."/HOTSPOTS.GINI") then
        if JCR_Exists(file:upper().."/HOTSPOTS.GINI") then
           local w,h = ret.images[1]:getWidth(),ret.images[1]:getHeight()
-          local h = ReadIni(file:upper().."/HOTSPOTS.GINI")
-          if     h.C("X")=="LEFT"   then ret.ox=0
-          elseif h.C("X")=="RIGHT"  then ret.ox=w
-          elseif h.C("X")=="CENTER" then ret.ox=w/2
-          else   ret.ox = h.C("X").tonumber() or 0 end
-          if     h.C("Y")=="UP"   or h.C("Y")=="TOP"    then ret.oy=0
-          elseif h.C("Y")=="DOWN" or h.C("Y")=="BOTTOM" then ret.oy=w
-          elseif h.C("Y")=="CENTER"                     then ret.oy=h/2
-          else   ret.oy = h.C("Y").tonumber() or 0 end
+          local hgini = ReadIni(file:upper().."/HOTSPOTS.GINI")
+          --print(serialize('hotspot_gini',hgini))
+          if     hgini:C("X")=="LEFT"   then ret.ox=0
+          elseif hgini:C("X")=="RIGHT"  then ret.ox=w
+          elseif hgini:C("X")=="CENTER" then ret.ox=w/2
+          else   ret.ox = tonumber(hgini:C("X")) or 0 end
+          if     hgini:C("Y")=="UP"   or hgini:C("Y")=="TOP"    then ret.oy=0
+          elseif hgini:C("Y")=="DOWN" or hgini:C("Y")=="BOTTOM" then ret.oy=w
+          elseif hgini:C("Y")=="CENTER"                     then ret.oy=h/2
+          else   ret.oy = tonumber(hgini:C("Y")) or 0 end
        end   
      else    
        ret.images = {love.graphics.newImage(JCR_D(file))}

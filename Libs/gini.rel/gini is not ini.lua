@@ -1,7 +1,7 @@
 --[[
   gini is not ini.lua
   
-  version: 18.01.03
+  version: 18.01.12
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -62,9 +62,9 @@ Rem
 bbdoc: Registers a function to initfile
 about: These functions can be called when loading an ini file. I must note this is a read-only function, as the effect of it will be deleted when you write these functions. Just register a function with the ini and a single string as parameter. The Function can then do with the ini according to what the ini file wants. (This function works case INSENSITIVELY)
 ]] -- End Rem]]
-local IniFuncs={
+local Ini_RegFuncs={
      EachVar = function(self) return MapKeys(self.Vars) end,
-     C = function(self,T) return self.Vars:value(T:upper()) end,
+     C = function(self,T) return self.Vars:value(T:upper()) or "" end,
      D = function(self,T,V) MapInsert(self.Vars,T:upper(),V) end,
      Kill = function(self,T) MapRemove(self.Vars,T:upper()) end,
      CList = function(self,T,OnlyIfNew)
@@ -72,7 +72,7 @@ local IniFuncs={
                MapInsert(self.lists,T:upper(),{})
              end,  
      List = function(self,T)
-                  ret =  MapValueForKey(self.Lists,T:upper())
+                  local ret =  MapValueForKey(self.Lists,T:upper())
                   if not ret then print("WARNING! List "+T+" not found!") end
                   return ret
             end  ,
@@ -93,12 +93,14 @@ end -- End Function
 bbdoc: Variable used by init reader/writer
 ]] -- End Rem
 function newTIni() -- Type TIni
-  local ret
+  local ret = {}
   
-  ret.Vars=NewStringMap --:StringMap = New StringMap
-  ret.Lists=NewTMap --:TMap = New TMap
+  ret.Vars=NewStringMap() --:StringMap = New StringMap
+  ret.Lists=NewTMap() --:TMap = New TMap
+  assert(ret.Vars,"Internal error: Vars=nil")
+  assert(ret.Lists,"Internal error: Lists=nil")
 
-  for k,f in Ini_RegFuncs do ret[k]=f end  
+  for k,f in pairs(Ini_RegFuncs) do ret[k]=f end  
   
   return ret 
   
@@ -189,9 +191,10 @@ else
 end      
 end --End Function      
       
-function LoadIni(File,AIni,nMerge,real)
+function LoadIni(File,AIni,real) --function LoadIni(File,AIni,nMerge,real)
 local Ini = AIni
-if nMerge or (not Ini) then Ini=NewTIni end
+local nMerge=false -- Since Lua does not support the required functionality I had to do this!
+if nMerge or (not Ini) then Ini=newTIni() end
 --Local wtag$,Lst:TList,line$,tag$,tagsplit$[],tagparam$[],tline$,cmd$,para$,pos
 local wtag,lst,line,tag,tagsplit,tagparam,tline,cmd,para,pos
 tag="OLD"
@@ -283,7 +286,8 @@ for line in each ( Listfile(File) ) do
             print("Warning! Invalid var definition: "+line)
           else
             tagsplit=mysplit(line,"=")
-            Ini.D(UnIniString(tagsplit[1]),UnIniString(tagsplit[2]))
+            --print(serialize("defining",tagsplit),UnIniString(tagsplit[1]),UnIniString(tagsplit[2]))
+            Ini:D(UnIniString(tagsplit[1]),UnIniString(tagsplit[2]))
             end -- EndIf
         elseif tag=="LIST" then
           ListAddLast(lst,uninistring(line))
@@ -308,8 +312,8 @@ end --End Function
 -- If LoadIni is too awkward for you to use, you can use this in stead --
 -------------------------------------------------------------------------
 function ReadIni(file,real)
-  ret = {} --Local ret:TIni = New TIni
-  LoadIni(file,ret,true,real)
+  local ret = newTIni() --{} --Local ret:TIni = New TIni
+  LoadIni(file,ret,real)
   return ret
 end --End Function  
   
