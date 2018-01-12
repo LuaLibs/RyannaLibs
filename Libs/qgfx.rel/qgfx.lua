@@ -68,9 +68,10 @@ function LoadImage(file,assign)
           elseif hgini:C("X")=="CENTER" then ret.ox=w/2
           else   ret.ox = tonumber(hgini:C("X")) or 0 end
           if     hgini:C("Y")=="UP"   or hgini:C("Y")=="TOP"    then ret.oy=0
-          elseif hgini:C("Y")=="DOWN" or hgini:C("Y")=="BOTTOM" then ret.oy=w
+          elseif hgini:C("Y")=="DOWN" or hgini:C("Y")=="BOTTOM" then ret.oy=h
           elseif hgini:C("Y")=="CENTER"                     then ret.oy=h/2
           else   ret.oy = tonumber(hgini:C("Y")) or 0 end
+          --print("Image hotspotted at: ("..ret.ox..","..ret.oy..")")
        end   
      else    
        ret.images = {love.graphics.newImage(JCR_D(file))}
