@@ -42,7 +42,7 @@ newtmap = newStringmap
 
 function MapInsert(map,key,value) 
    map.tab[key]=value
-   print('Assinged '..sval(value)..' to '..key,"\n"..serialize('map',map))  
+   --print('Assinged '..sval(value)..' to '..key,"\n"..serialize('map',map))  
 end -- This makes convertation from Blitz sooo much easier.
 
 function MapValueForKey(map,key)  return map.tab[key] end 
