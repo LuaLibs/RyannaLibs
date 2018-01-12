@@ -1,7 +1,7 @@
 --[[
   fake stringmap.lua
   
-  version: 18.01.02
+  version: 18.01.12
   Copyright (C) 2018 2017
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -40,7 +40,11 @@ newtmap = newStringmap
 
 
 
-function MapInsert(map,key,value) map.tab[key]=value  end -- This makes convertation from Blitz sooo much easier.
+function MapInsert(map,key,value) 
+   map.tab[key]=value
+   print('Assinged '..sval(value)..' to '..key,"\n"..serialize('map',map))  
+end -- This makes convertation from Blitz sooo much easier.
+
 function MapValueForKey(map,key)  return map.tab[key] end 
 
 function MapKeys(map)
