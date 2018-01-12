@@ -120,13 +120,85 @@ local drawclass = {
             return r
        end,
        draw=function(self,camx,camy)
+           local ABX,ABY,TBX,TBY,AcX,AcY,GoX,GoY,GoW
+           local cnode
+           local Floor = math.floor
+           local map=self.PARENT
            if self.anim or self.moving or self.walking then
               animate(self)
            end
            ktcolor(self)
            local ax = self.COORD.x - (camx or 0)
            local ay = self.COORD.y - (camy or 0)
-           DrawImage(self.LoadedTexture,ax,ay,self.FRAME,self.ROTATION,self.SCALE.x/1000,self.SCALE.y/1000)
+           --DrawImage(self.LoadedTexture,ax,ay,self.FRAME,self.ROTATION,self.SCALE.x/1000,self.SCALE.y/1000)
+           local A=self
+           
+           -- Walker calculations
+           if A.walking and (not A.moving) then 
+              ABX = Floor(self.COORD.x/32) --(A.X/A.parent.BlockmapgridW)
+              ABY = Floor(self.COORD.y/32) --(A.Y/A.parent.BlockmapgridH)
+              cnode=A.nodes[A.node]    TBX,TBY=cnode.x,cnode.y --ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY
+              --'Print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath) ' debugline
+              if ABX==Floor(TBX) and ABY==Floor(TBY) then
+                 A.node = A.node + 1 -- A.WalkSpot:+1
+                 A.walking=A.node<#A.nodes -- A.Walking = A.WalkSpot<=LengthWay(A.FoundPath)
+              end --EndIf
+              if A.walking then
+                 cnode=A.nodes[A.node]    TBX,TBY=cnode.x,cnode.y --   ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY        
+                 AcX = (ABX*32) + 16 -- (abX*A.Parent.BlockMapGridW)+(A.Parent.BlockMapGridW/2)
+                 AcY = ((ABY+1)*32) -2  -- ((abY+1)*A.Parent.BlockMapGridH)-1
+                 GoX = (TBX*32)+16 -- (tbX*A.Parent.BlockMapGridW)+(A.Parent.BlockMapGridW/2)
+                 GoY = ((TBY+1)*32) -2 -- ((tbY+1)*A.Parent.BlockMapGridH)-1
+                 --'print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath)+" AcX = "+AcX+"; GoX = "+GoX+"; AcY = "+AcY+"; GoY = "+GoY ' debugline
+                 if ABX~=TBX then
+                    A:MoveTo(GoX,AcY,1)
+                    -- 'Print "Going to "+GoX+","+AcY+" Moving Horizontally"
+                 elseif ABY~=TBY then
+                    A:MoveTo(AcX,GoY,1)
+                    --'Print "Going to "+AcX+","+GoY+" Moving Vertically"
+                 end -- EndIf
+              end --EndIf         
+           end --EndIf
+           
+           -- Mover calculations
+           if A.moving then
+               for ak=1,A.MoveSkip do -- For ak=0 Until A.Moveskip
+                   local labs=mysplit(A.LABELS  or "",",") -- Local labs$[] = O.Labels.split(",")
+                   local domstring = kthura.domnum(A.PARENT,A.LAYER,A) -- right("00000000000000000000"..(A.DOMINANCE or 20),5)..right("00000000000000000000"..A.COORD.y,5)
+                   --[[ temporary out of use
+                   for L in each(labs) do -- For Local L$=EachIn labs
+                       -- MapRemove A.parent.TagMapByLabel.Get(Trim(L),True),Hex(A.dominance)+"."+Hex(+A.Y)+"."+Hex(A.idnum)
+                   end ]] --Next
+                   map.dominancemap[A.LAYER][domstring]=nil --MapRemove A.parent.Drawmap,Hex(A.dominance)+"."+Hex(A.Y)+"."+Hex(A.idnum)                  
+                   GoX=A.COORD.x
+                   GoY=A.COORD.y
+                   GoW=A.WIND
+                   if A.MoveY<A.COORD.y then GoY=A.COORD.y-1; GoW="North" end
+                   if A.MoveY>A.COORD.y then GoY=A.COORD.y+1; GoW="South" end
+                   if A.MoveX<A.COORD.x then GoX=A.COORD.x-1; GoW="West"  end
+                   if A.MoveX>A.COORD.x then GoX=A.COORD.x+1; GoW="East"  end
+                   if A.MoveIgnoreBlock or (not A.PARENT:block(A.LAYER,GoX,GoY)) then
+                      A.COORD.x=GoX
+                      A.COORD.y=GoY
+                      A.WIND = GoW
+                   else
+                      A.moving=false --' Destination is blocked.
+                   end --EndIf
+                   if A.COORD.x==A.MoveX and A.COORD.y==A.MoveY then A.moving=false end -- We reached the destination
+                   --[[ temp out of use
+                     labs = O.Labels.split(",")
+                     For Local L$=EachIn labs
+                         MapInsert A.parent.TagMapByLabel.Get(Trim(L),True),Hex(A.dominance)+"."+Hex(+A.Y)+"."+Hex(A.idnum),A
+                     Next
+                   ]]  
+                   domstring = kthura.domnum(A.PARENT,A.LAYER,A) -- right("00000000000000000000"..(A.DOMINANCE or 20),5)..right("00000000000000000000"..A.COORD.y,5) --MapInsert A.parent.Drawmap,Hex(A.dominance)+"."+Hex(+A.Y)+"."+Hex(A.idnum),A
+                   map.dominancemap[A.LAYER][domstring]=A
+               end -- Next
+           end -- EndIf 
+       --DrawImage I,A.X-x,A.Y-y,A.Frame
+       ax = self.COORD.x - (camx or 0)
+       ay = self.COORD.y - (camy or 0)       
+       DrawImage(self.LoadedTexture,ax,ay,self.FRAME,self.ROTATION,self.SCALE.x/1000,self.SCALE.y/1000)
        end
     
     },
@@ -191,10 +263,13 @@ function kthura.drawmap(self,layer,camx,camy)
        print("WARNING! Dominance was not mapped. This must be done before drawing so let's do that now anyway") 
        kthura.remapdominance(self) 
     end
-       for _,dm in spairs(self.dominancemap[layer]) do
-         for o in each(dm) do 
+       for dk,o in spairs(self.dominancemap[layer]) do
+         --[[
+         if not dm then print("It's not right... let's investigate") for k,v in pairs(self.dominancemap[layer]) do print(type(v),k) end end
+         TrickAssert(type(dm)=='table','Dominance map corrupted with type '..type(dm).." on #"..sval(dk).."! Expected a table.")
+         for o in each(dm) do]] 
            if not o.draw then kthura.classobject(o) end
            if o.VISIBLE then o:draw(camx,camy) end
-         end  
+         --end  
        end            
 end

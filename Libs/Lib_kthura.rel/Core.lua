@@ -21,7 +21,7 @@ kthura ={}
 -- $FI  
 
 
-kthura.searcher='dijkstra' -- For now the default searcher. I just had to pick one ;)
+kthura.searcher='DIJKSTRA' -- For now the default searcher. I just had to pick one ;)
 
 local BM={}
 
@@ -58,20 +58,59 @@ function BM.Zone(d,g)
 end    
 BM.TiledArea=BM.Zone
 
+local function numobject(map,layer,obj)
+    local num=0
+    for i,o in pairs(map.MapObjects[layer]) do
+        if o~=obj and (o.idnum or -1)>=num then num=o.idnum+1 end
+    end
+    obj.idnum=num
+end
+
+-- I'll leave this undocumented under all cercumstances as this function is NOT for public use, but otherwise it wouldn't fully work the way it was intended
+function kthura.domnum(m,l,obj)
+    if not obj.idnum then numobject(m,l,obj) end
+    local work = {obj.DOMINANCE or 20,obj.COORD.y, obj.idnum}
+    local ret
+    for w in each(work) do
+        if not ret then ret="" else ret=ret..":" end
+        ret = ret .. right("0000000000"..w,10)
+    end
+    return ret
+end
+local domnum=kthura.domnum
+
 
 function kthura.remapdominance(map)
    map.dominancemap = {}
    for lay,objl in pairs(map.MapObjects) do for o in each(objl) do
        map.dominancemap[lay] = map.dominancemap[lay] or {}
+       --[[ crap
        local domstring = right("00000000000000000000"..(o.DOMINANCE or 20),5)..right("00000000000000000000"..o.COORD.y,5)
        map.dominancemap[lay][domstring] = map.dominancemap[lay][domstring] or {}
        local m =map.dominancemap[lay][domstring]
        m[#m+1]=o
+       ]]      
+       local dn = domnum(map,lay,o) -- Must calculate this real time, as this is based on real time parameters which are important, especially with moving actors!
+       map.dominancemap[lay][dn] = o
    end end
+end
+
+function kthura.remaplabels(map)
+     map.labelmap = {}
+     for lay,objl in pairs(map.MapObjects) do for o in each(objl) do
+         labs = mysplit(o.LABELS,",")
+         map.labelmap[lay] = map.labelmap[lay] or {}
+         for label in each(labs) do 
+             map.labelmap[lay][label] = map.labelmap[lay][label] or {}
+             local lm=mal.labelmap[lay][label]
+             lm[#lm+1]=o
+         end
+     end end    
 end
 
 function kthura.map_block(map,layer,x,y)
    if not map.blockmap then return nil end
+   assert(map.Grid[layer],'No Grid mode for layer: '..sval(layer))
    local g = mysplit(map.Grid[layer],"x")
    local gx = tonumber(g[1]) or 1
    local gy = tonumber(g[2]) or 1
@@ -133,6 +172,8 @@ function kthura.makeclass(map)
      map.draw = kthura.drawmap
      map.remapdominance = kthura.remapdominance --(map)
      map.buildblockmap = kthura.buildblockmap --(map)
+     map.buildlabelmap = kthura.buildlabelmap
+     map.remapall = kthura.remapall
      map.block = kthura.map_block
      map.obj = kthura.obj
 end
@@ -167,6 +208,7 @@ function kthura.remapall(map)
     kthura.remapdominance(map)
     kthura.remaptags(map)
     kthura.buildblockmap(map)
+    kthura.remaplabels(map)    
 end
 
 local actorclass={}
@@ -194,8 +236,15 @@ function actorclass:WalkTo(a1,a2)
     end         
     ]]
     local parent=self.PARENT
-    parent.pathfinder = parent.pathfinder or PathFinder(self.jumpergrid, kthura.searcher, 0)
+    parent.pathfinder = parent.pathfinder or PathFinder(parent.jumpergrid, kthura.searcher, 0)
     self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
+    self.nodes ={}
+    self.node=1
+    for node, count in self.path:nodes() do
+        self.nodes[count]={x=node:getX(),y=node:getY()}
+    end
+    self.walking = true
+    print ( serialize('nodes',self.nodes))    
 end
 
 function actorclass:MoveTo(a,b,c)
@@ -215,23 +264,27 @@ function actorclass:MoveTo(a,b,c)
   self.MoveIgnoreBlock = TIgnoreBlocks
 end 
   
-
+actorclass.MoveSkip=4
   
 
 
 
 function kthura.Spawn(map,layer,spot,tag,xdata)
-    local x,y
+    local x,y,labels,dom
     assert(map,errortag('kthura.Spawn',{map,layer,spot,tag,xdata},"No Map"))
     assert(map.MapObjects[layer],errortag('kthura.Spawn',{map,layer,spot,tag,xdata},"Layer not found"))
     if type(spot)=='table' then
        x = spot[1] or spot.x or spot.X or 0
        y = spot[2] or spot.y or spot.Y or 0
+       labels = ""
+       dom=20
     elseif type(spot)=='string' then
        local xspot = map.TagMap[layer][spot]
        assert(xspot,errortag('kthura.Spawn',{map,layer,spot,tag,xdata},"Tried to spawn on an non-existent spot"))
        x = xspot.COORD.x
        y = xspot.COORD.y
+       labels = xspot.LABELS or ""
+       dom=xspot.DOMINANCE
     end   
     local actor = {}
     local list = map.MapObjects[layer]
@@ -254,6 +307,8 @@ function kthura.Spawn(map,layer,spot,tag,xdata)
     actor.BLEND = 0
     actor.LAYER = layer -- Needed for typical actor stuff  
     actor.PARENT=map
+    actor.LABELS=labels
+    actor.DOMINANCE=dom 
     kthura.makeobjectclass(actor)
     for k,v in pairs(actorclass) do actor[k]=v end -- Adding the actor methods to the actor
     for k,v in pairs(xdata or {}) do actor[k] = v end
@@ -319,8 +374,13 @@ function kthura.load(amap,real,dontclass)
    local compiled = loadstring(script)
    assert ( compiled, errortag('kthura.load',{amap,real,dontclass},"Failed to compile map data"))
    local ret = compiled()
+   for layer,obs in pairs(ret.MapObjects) do
+       local id=0
+       for i,obs in pairs(obs) do obs.idnum=id; id=id+1 end
+   end    
    if not dontclass then kthura.makeclass(ret) end
    kthura.remapdominance(ret)
+   kthura.remapall(ret)
    return ret   
 end
 
