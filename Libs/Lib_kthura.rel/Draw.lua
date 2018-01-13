@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.12
+        Version: 18.01.13
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.01.12")
+mkl.version("Ryanna Libraries - Draw.lua","18.01.13")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -124,9 +124,11 @@ local drawclass = {
            local cnode
            local Floor = math.floor
            local map=self.PARENT
+           --[[
            if self.anim or self.moving or self.walking then
               animate(self)
            end
+           ]]
            ktcolor(self)
            local ax = self.COORD.x - (camx or 0)
            local ay = self.COORD.y - (camy or 0)
@@ -141,7 +143,7 @@ local drawclass = {
               --'Print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath) ' debugline
               if ABX==Floor(TBX) and ABY==Floor(TBY) then
                  A.node = A.node + 1 -- A.WalkSpot:+1
-                 A.walking=A.node<#A.nodes -- A.Walking = A.WalkSpot<=LengthWay(A.FoundPath)
+                 A.walking=A.node<=#A.nodes -- A.Walking = A.WalkSpot<=LengthWay(A.FoundPath)
               end --EndIf
               if A.walking then
                  cnode=A.nodes[A.node]    TBX,TBY=cnode.x,cnode.y --   ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY        
@@ -151,10 +153,10 @@ local drawclass = {
                  GoY = ((TBY+1)*32) -2 -- ((tbY+1)*A.Parent.BlockMapGridH)-1
                  --'print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath)+" AcX = "+AcX+"; GoX = "+GoX+"; AcY = "+AcY+"; GoY = "+GoY ' debugline
                  if ABX~=TBX then
-                    A:MoveTo(GoX,AcY,1)
+                    A:MoveTo(GoX,AcY,true)
                     -- 'Print "Going to "+GoX+","+AcY+" Moving Horizontally"
                  elseif ABY~=TBY then
-                    A:MoveTo(AcX,GoY,1,true)
+                    A:MoveTo(AcX,GoY,true)
                     --'Print "Going to "+AcX+","+GoY+" Moving Vertically"
                  end -- EndIf
               end --EndIf         
@@ -183,6 +185,7 @@ local drawclass = {
                       A.WIND = GoW
                    else
                       A.moving=false --' Destination is blocked.
+                      A.walking=false
                    end --EndIf
                    if A.COORD.x==A.MoveX and A.COORD.y==A.MoveY then A.moving=false end -- We reached the destination
                    --[[ temp out of use
@@ -197,7 +200,19 @@ local drawclass = {
            end -- EndIf 
        --DrawImage I,A.X-x,A.Y-y,A.Frame
        ax = self.COORD.x - (camx or 0)
-       ay = self.COORD.y - (camy or 0)       
+       ay = self.COORD.y - (camy or 0)
+       if A.moving or A.walking then
+          A.AniTickTime=A.AniTickTime or .05
+          local ticktime = love.timer.getTime()
+          A.AniTick=A.AniTick or ticktime
+          if math.abs(A.AniTick-ticktime)>A.AniTickTime then
+             A.FRAME=A.FRAME+1
+             if A.FRAME>#self.LoadedTexture.images then A.FRAME=1 end
+             A.AniTick=ticktime
+          end
+       else
+          A.FRAME=1
+       end       
        DrawImage(self.LoadedTexture,ax,ay,self.FRAME,self.ROTATION,self.SCALE.x/1000,self.SCALE.y/1000)
        end
     

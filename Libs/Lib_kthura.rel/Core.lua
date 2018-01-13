@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.12
+        Version: 18.01.13
 ]]
 
 -- $USE libs/errortag
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.12")
+mkl.version("Ryanna Libraries - Core.lua","18.01.13")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -143,6 +143,29 @@ function kthura.map_block(map,layer,x,y)
    return map.blockmap[cx..","..cy]
 end   
 
+function kthura.rangeblock(map,layer,sx,sy,ex,ey)
+   if sx~=ex and sy~=ey then error("I can only check rangeblocks horizontally and vertically!")
+   elseif sx==ex and sy==ey then return kthura.map_block(map,layer,sx,sy) 
+   elseif sx<ex and sy==ey then
+       for x=sx,ex,1 do
+           if kthura.map_block(map,layer,x,sy) then return true end
+       end  
+   elseif sx>ex and sy==ey then
+       for x=ex,sx,1 do
+           if kthura.map_block(map,layer,x,sy) then return true end
+       end  
+   elseif sy<ey and sx==ex then
+       for y=sy,ey,1 do
+           if kthura.map_block(map,layer,sx,y) then return true end
+       end  
+   elseif sy>ey and sx==ex then
+       for y=ey,sy,1 do
+           if kthura.map_block(map,layer,sx,y) then return true end
+       end  
+  end 
+  return false
+end   
+
 function kthura.serialblock(map,layer) -- Returns a list of strings, giving a global idea of the blockmap. Only meant for debugging purposes.
   local w=0
   local h=0
@@ -200,6 +223,7 @@ function kthura.makeclass(map)
      map.buildlabelmap = kthura.buildlabelmap
      map.remapall = kthura.remapall
      map.block = kthura.map_block
+     map.rblock = kthura.rangeblock
      map.obj = kthura.obj
 end
 
@@ -267,8 +291,31 @@ function actorclass:WalkTo(a1,a2)
     if not self.path then return false end -- pathfinding failed
     self.nodes ={}
     self.node=1
+    local tnodes = {}
+    local count=0
     for node, count in self.path:nodes() do
-        self.nodes[count]={x=node:getX(),y=node:getY()}
+        --count=#self.nodes+1
+        tnodes[count]={x=node:getX(),y=node:getY()}
+    end
+    for i,node in ipairs(tnodes) do            
+        if i>1 then --and i<#tnodes then
+           local yet = tnodes[i]
+           local was = tnodes[i-1]
+           -- TrickAssert(was.x,"Invalid data on previous record",{node=count,was=serialize('table',was),yet=serialize('table',yet),fullnodetable=serialize('table',self.nodes)})
+           if yet.x~=was.x and yet.y~=was.y then
+              local rwas = {x=(was.x*32)-16,y=(was.y*32)-16}
+              local ryet = {x=(yet.x*32)-16,y=(yet.y*32)-16}
+              if not(parent:rblock(self.LAYER,rwas.x,rwas.y,rwas.x,ryet.y)) then
+                 self.nodes[#self.nodes+1]={x=was.x,y=yet.y}
+                 --print("Adding vertical correction node: ("..self.nodes[#self.nodes].x..","..self.nodes[#self.nodes].y..")")
+              elseif not(parent:rblock(self.LAYER,rwas.x,rwas.y,ryet.x,rwas.y)) then  
+                 self.nodes[#self.nodes+1]={x=yet.x,y=was.y}
+                 --print("Adding horizontal correction node: ("..self.nodes[#self.nodes].x..","..self.nodes[#self.nodes].y..")")
+              end   
+           end
+        end
+        print("Adding jumper node: ("..node.x..","..node.y..")")
+        --self.nodes[#self.nodes+1]=node   
     end
     self.walking = true
     -- print ( serialize('nodes',self.nodes))    
@@ -290,6 +337,7 @@ function actorclass:MoveTo(a,b,c)
   self.MoveX = TX
   self.MoveY = TY
   self.MoveIgnoreBlock = TIgnoreBlocks
+  --print('<ACTOR>.MoveTo('..sval(a)..","..sval(b)..","..sval(c)..'):',' Moving to: ('..self.MoveX..","..self.MoveY..")   IgnoreBlocks="..sval(self.MoveIgnoreBlock))
 end 
   
 actorclass.MoveSkip=4
