@@ -150,6 +150,10 @@ h = i.images[1]:getHeight()
 return w,h
 end
 
+function ImageLoaded(imgtag)
+    return assets[img]~=nil
+end    
+
 function ImageWidth(img)
 local w,h = ImageSizes(img)
 return w
