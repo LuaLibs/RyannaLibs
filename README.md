@@ -15,7 +15,7 @@ Notes:
 - Most Mac formats can be used case insensitively, if you are not sure about the sensitivity of your chosen device, play safe and go for sensitive. FAT32 and ExFAT are case insensitve regardless of the system calling it.
 - When building a project Ryanna will kill all case sensitivity. When you have "script.lua" and "script.Lua", they will both be included, but one of them will not be accessible. This will happen regardless of OS (yes, even in Linux. Ryanna was coded and scripted to do so).
 - Yes, you can make one library refer to another. Ryanna will then just import that other one as well, even when the main project doesn't.
-- A feature is planned to make Ryanna able to ignore scripts suffixed with "__windows" when not in windows, and using the "__darwin" and "__linux" suffixes in the same manner, be careful with using "__" in file names. A single underscore is fine, but two is 'risky', as more features may appear using these double underscores.
+- A feature is planned to make Ryanna able to ignore scripts suffixed with "\_\_windows" when not in windows, and using the "\_\_darwin" and "\_\_linux" suffixes in the same manner, be careful with using "\_\_" in file names. A single underscore is fine, but two is 'risky', as more features may appear using these double underscores.
 - Library rules:
   - All libaries must be folders using the extension "rel" (Ryanna Expanded Library).
   - Libary names may NOT include spaces.
