@@ -1,7 +1,7 @@
 --[[
   gamevar.lua
   
-  version: 18.01.06
+  version: 18.01.13
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -103,7 +103,7 @@ end
 function VarList()
      local ret = ""
      for k,v in spairs(vars.v) do
-         ret = ret .. k .. " = "..(Var.C(k) or 'ERROR! NO VALUE FOUND!')
+         ret = ret .. k .. " = "..(Var.C(k) or 'ERROR! NO VALUE FOUND!').."\n"
      end 
      return ret
 end         
