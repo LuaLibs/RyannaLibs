@@ -139,7 +139,9 @@ local drawclass = {
            if A.walking and (not A.moving) then 
               ABX = Floor(self.COORD.x/32) --(A.X/A.parent.BlockmapgridW)
               ABY = Floor(self.COORD.y/32) --(A.Y/A.parent.BlockmapgridH)
-              cnode=A.nodes[A.node]    TBX,TBY=cnode.x,cnode.y --ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY
+              cnode=A.nodes[A.node]
+              assert(cnode,"NIL NIL NIL!!!!\n"..serialize('nodes',A.nodes).."\n"..serialize('node',A.node))    
+              TBX,TBY=cnode.x,cnode.y --ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY
               --'Print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath) ' debugline
               if ABX==Floor(TBX) and ABY==Floor(TBY) then
                  A.node = A.node + 1 -- A.WalkSpot:+1

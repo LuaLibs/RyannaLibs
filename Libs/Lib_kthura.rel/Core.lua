@@ -314,12 +314,13 @@ function actorclass:WalkTo(a1,a2)
               end   
            end
         end
-        print("Adding jumper node: ("..node.x..","..node.y..")")
-        --self.nodes[#self.nodes+1]=node   
+        --print("Adding jumper node: ("..node.x..","..node.y..")")
+        self.nodes[#self.nodes+1]=node   
     end
-    self.walking = true
+    self.walking = #self.nodes>0
+    --print("Walk request has "..#self.nodes.." nodes")
     -- print ( serialize('nodes',self.nodes))    
-    return true
+    return self.walking --true
 end
 
 function actorclass:MoveTo(a,b,c)
