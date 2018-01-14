@@ -57,7 +57,7 @@ local function getneededletters(text)
            wait=2
         else
             local b = mid(text,i,1):byte()
-            currentfont.characters[b] = currentfont.characters[b] or LoadImage(dir.."/"..b..".png")
+            currentfont.characters[b] = currentfont.characters[b] or LoadImage(currentfont.dir.."/"..b..".png")
             ret[#ret+1]=currentfont.characters[b]
         end    
     end
