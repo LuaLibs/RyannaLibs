@@ -1,7 +1,7 @@
 --[[
   Scenario.lua
   Scenario reader for Ryanna, based on the reader for GALE based interpreters.
-  version: 18.01.14
+  version: 18.01.15
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -112,7 +112,7 @@ for k,tag in pairs(ret) do for i,rec in pairs(tag) do
      end end
 -- Auto Tie Sound Files
 for k,tag in pairs(ret) do for i,rec in pairs(tag) do
-    if JCR_Exists("VOCALS/"..file.."/"..k.."_"..i..".ogg")==1 then 
+    if JCR_Exists("VOCALS/"..file.."/"..k.."_"..i..".ogg") then 
       rec.SoundFile = "Vocals/"..file.."/"..k.."_"..i..".ogg" 
       CSay("Got sound for "..k.." #"..i)
     else
