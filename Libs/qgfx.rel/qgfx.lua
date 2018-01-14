@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.01.13
+  version: 18.01.14
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.01.13")
+mkl.version("Ryanna Libraries - qgfx.lua","18.01.14")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -149,9 +149,11 @@ w = i.images[1]:getWidth()
 h = i.images[1]:getHeight()
 return w,h
 end
+ImageSize=ImageSizes
+
 
 function ImageLoaded(imgtag)
-    return assets[img]~=nil
+    return assets[imgtag]~=nil
 end    
 
 function ImageWidth(img)
