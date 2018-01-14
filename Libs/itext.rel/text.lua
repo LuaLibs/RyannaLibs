@@ -67,9 +67,9 @@ end
 local function sizebygottenletters(letters)
    local w,h=0,0
    for img in each(letters) do
-       local iw,ih = ImageSize(img)
+       local iw,ih = ImageSize(img)       
        w = w + iw
-       if ih>h then ih=h end
+       if ih>h then h=ih end
    end
    if h>currentfont.maxheight then currentfont.maxheight=h end
    return w,h
@@ -78,7 +78,7 @@ end
 function itext.write(text,x,y,alh,alv)
     assert(currentfont,"I cannot write text when the font is not yet set")
     local letters = getneededletters(text)
-    local w,h=sizebygottenletters(letters)
+    local w,h=sizebygottenletters(letters) --print('height "'..text.."' is ",w,"x",h) -- debug
     local tx,ty
     if alh==nil or alh==0 or alh=='l' then tx=x
     elseif         alh==1 or alh=='r' then ty=x-w
@@ -88,7 +88,7 @@ function itext.write(text,x,y,alh,alv)
     elseif         alv==2 or alv=='c' then ty=y-math.floor(h/2) end
     for img in each(letters) do
         DrawImage(img,tx,ty)
-        tx=tx+ImageWidth(tx)
+        tx=tx+ImageWidth(img)
     end    
 end
 
