@@ -1,7 +1,7 @@
 --[[
   Scenario.lua
   Scenario reader for Ryanna, based on the reader for GALE based interpreters.
-  version: 18.01.13
+  version: 18.01.14
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
