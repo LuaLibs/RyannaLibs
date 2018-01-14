@@ -78,7 +78,7 @@ end
 function itext.write(text,x,y,alh,alv)
     assert(currentfont,"I cannot write text when the font is not yet set")
     local letters = getneededletters(text)
-    local w,h=sizegottenbyletters(letters)
+    local w,h=sizebygottenletters(letters)
     local tx,ty
     if alh==nil or alh==0 or alh=='l' then tx=x
     elseif         alh==1 or alh=='r' then ty=x-w
@@ -95,7 +95,7 @@ end
 function itext.size(text)
     assert(currentfont,"I cannot write text when the font is not yet set")
     local letters = getneededletters(text)
-    local w,h=sizegottenbyletters(letters)
+    local w,h=sizebygottenletters(letters)
     return w,h
 end
 
