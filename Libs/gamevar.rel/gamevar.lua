@@ -1,7 +1,7 @@
 --[[
   gamevar.lua
   
-  version: 18.01.15
+  version: 18.01.16
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -108,5 +108,19 @@ function VarList()
      return ret
 end         
 
-local gv = { Var=Var, C=Var.C, D=Var.D,Done=Done,S=Var.S,G=Var.G, Kill=Var.Kill, Clear=Var.Clear }
+function Vars()
+   local ret = {}
+   for k,_ in spairs(vars.v) do
+       ret[#ret+1]=k
+   end
+   return ret
+end
+
+function vars.TV(self,tag)
+    return self.v[tag]
+end
+function Var.TV(tag) return vars:TV(tag) end
+       
+
+local gv = { Var=Var, C=Var.C, D=Var.D,Done=Done,S=Var.S,G=Var.G, Kill=Var.Kill, Clear=Var.Clear, TV=Var.TV }
 return gv
