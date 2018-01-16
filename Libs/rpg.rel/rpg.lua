@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.01.08
+  version: 18.01.16
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -761,7 +761,7 @@ End Rem
 ]]
 -- $USE Libs/binread
 -- $USE Libs/stringmapfile
-function RPGLoad(p1,p2) --Function RPGLoad(LoadFrom:TJCRDir,Dir$="")
+function RPGLoad(p1,p2,p3) --Function RPGLoad(LoadFrom:TJCRDir,Dir$="")
 local function getfile(file,pdat)
   local data
   if not p2 then
@@ -769,7 +769,11 @@ local function getfile(file,pdat)
   elseif p1=="love" then
    data = love.filesystem.read(p2.."/"..file)
   elseif p1=='jcr' then
-   data = JCR_B(p2.."/"..file)
+   if not p3 then 
+      data = JCR_B(p2.."/"..file)
+   else
+      data = JCR_B(p2,p3.."/"..file)
+   end      
   else
    error("I'm clueless in how you want me to load the RPG data")
   end     
@@ -1017,7 +1021,9 @@ Else
 If D And Right(D,1)<>"/" D:+"/"
 ]]
 -- Save Party members
-BTE = binwrite(D+"/Party") -- BT.CreateEntry(D+"Party","zlib")
+ -- Dir creation
+assert(love.filesystem.createDirectory(D),"Creation of "..D.." failed")
+local BTE = binwrite(D.."/Party") -- BT.CreateEntry(D+"Party","zlib")
 BTE:putint(#RPGParty) --WriteInt BTE.Stream,Len(RPGParty)
 for P in each(RPGParty) do --For Local P$=EachIn RPGParty
   BTE:putstring(P) -- TrickyWriteString BTE.Stream,P
@@ -1030,8 +1036,10 @@ for key,ch in spairs(RPGChars) do
   if not ch then 
     print( "WARNING! A wrong record in the chars map" )
   else
+    assert(love.filesystem.createDirectory(D.."/Character"),"Creation of "..D.."/Character failed")
+    assert(love.filesystem.createDirectory(D.."/Character/"..key),"Creation of "..D.."/Character/"..key.." failed")
     -- Name
-    BTE = binwrite(D.."/Name") -- BT.CreateEntry(D+"Character/"+key+"/Name","zlib")
+    BTE = binwrite(D.."/Character/"..key.."/Name") -- BT.CreateEntry(D+"Character/"+key+"/Name","zlib")
     BTE:writestring(ch.Name) -- TrickyWriteString BTE.Stream, ch.Name
     BTE:close()
     --' Data
@@ -1043,7 +1051,7 @@ for key,ch in spairs(RPGChars) do
       BTE:putbyte(1) --WriteByte bte.stream,1
       BTE:putstring(skey) -- TrickyWriteString bte.stream,skey
       BTE:putbyte(2) -- WriteByte bte.stream,2
-      BTE:putbyte(v.pure) -- WriteByte bte.stream,v.pure
+      BTE:putbool(v.pure) -- WriteByte bte.stream,v.pure
       BTE:putbyte(3) -- WriteByte bte.stream,3
       BTE:putstring(v.ScriptFile) -- TrickyWriteString bte.stream,v.scriptfile
       BTE:putstring(v.CallFunction) -- TrickyWriteString bte.stream,v.callfunction
@@ -1054,8 +1062,8 @@ for key,ch in spairs(RPGChars) do
     end--  Next
     BTE:close()
     --' Lists
-    BTE=binwrite(D.."/Character/"..key.."/"..Lists) -- BTE = BT.CreateEntry(D+"Character/"+key+"/Lists","zlib")
-    for  lkey,wlist in spairs(ch.lists) do -- $=EachIn MapKeys(ch.lists)
+    BTE=binwrite(D.."/Character/"..key.."/Lists") -- BTE = BT.CreateEntry(D+"Character/"+key+"/Lists","zlib")
+    for  lkey,wlist in spairs(ch.Lists) do -- $=EachIn MapKeys(ch.lists)
       BTE:putbyte(1) -- WriteByte bte.stream,1
       BTE:putstring(lkey) --TrickyWriteString bte.stream,lkey
       for item in wlist do-- =EachIn ch.list(lkey)
@@ -1076,7 +1084,7 @@ for key,ch in spairs(RPGChars) do
       BTE:putbyte(4) -- WriteByte bte.stream,4
       BTE:putint(pp.Maximum) -- WriteInt bte.stream,ch.point(pkey).maximum
       BTE:putbyte(5) -- WriteByte bte.stream,5
-      BTE:Putint(pp.Minimum) -- WriteInt bte.stream,ch.point(pkey).minimum
+      BTE:putint(pp.Minimum) -- WriteInt bte.stream,ch.point(pkey).minimum
     end --  Next
     BTE:close() 
     --' Picture
@@ -1113,8 +1121,8 @@ for ch1,och1 in spairs(RPGChars) do for ch2,och2 in spairs(RPGChars) do
     end --EndIf
   end   
   end end -- Next Next
-BTE.putbyte(255) -- WriteByte bte.stream,255
-BTE.close()
+BTE:putbyte(255) -- WriteByte bte.stream,255
+BTE:close()
 --' Close if needed
 -- If String(SaveTo) BT.Close()  
 end -- End Function
