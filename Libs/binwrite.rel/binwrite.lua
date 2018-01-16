@@ -1,7 +1,7 @@
 --[[
   binwrite.lua
   
-  version: 18.01.07
+  version: 18.01.16
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,6 +26,7 @@ local function phnum(bt,n,bytes)
     local b=bytes or 4
     local buf={}
     for i=1,b do buf[i]=0 end
+    buf[1]=n
     for i=1,b    do
         while buf[i]>255 do
           assert( i<b,"OVERFLOW!" )
@@ -40,6 +41,7 @@ local function pint(bt,b) bt:puthighnum(b,4) end
 local function plong(bt,b) bt:puthighnum(b,8) end
 local function prs(bt,s) bt.data=bt.data..s end 
 local function pstring(bt,s) bt:putint(#s) bt:putrawstring(s) end
+local function pbool(bt,b) if b then bt:putbyte(1) else bt:putbyte(0) end end
 
 local function pclose(bt)
    if bt.real then
@@ -64,6 +66,7 @@ return function(file,real)
     ret.putlong=plong
     ret.putrawstring=prs
     ret.putstring=pstring
+    ret.putbool = pbool
     ret.writestring=pstring
     ret.close=pclose
     return ret
