@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.13
+        Version: 18.01.16
 ]]
 
 -- $USE libs/errortag
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.13")
+mkl.version("Ryanna Libraries - Core.lua","18.01.16")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -262,6 +262,10 @@ end
 
 local actorclass={}
 
+local function mgpath(A,x,y)
+   return A.PARENT.pathfinder:getPath(math.floor(A.COORD.x/32),math.floor(A.COORD.y/32),x,y)
+end
+
 function actorclass:WalkTo(a1,a2)
     local x,y
     if     type(a1)=='number' and type(a2)=='number' then x,y=a1,a2 
@@ -287,7 +291,16 @@ function actorclass:WalkTo(a1,a2)
     ]]
     local parent=self.PARENT
     parent.pathfinder = parent.pathfinder or PathFinder(parent.jumpergrid, kthura.searcher, 0)
-    self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
+    -- This one would crash if a use requests stuff OUTSIDE the field, so let's do that elseway -- self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
+    local pathyes,pathdata = pcall(mgpath,self,x,y)
+    if not pathyes then
+       print("WARNING!",pathdata)
+       if console then console.write("WARNING!",255,180,0) console.writeln(pathdata) end
+       self.walking=false
+       return
+    end
+    if console and (not self.path )then console.write("WARNING!",255,180,0) console.writeln("nil received for pathdata") end
+    self.path = pathdata
     if not self.path then return false end -- pathfinding failed
     self.nodes ={}
     self.node=1
