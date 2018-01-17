@@ -1,7 +1,7 @@
 --[[
   binread.lua
   Bin Read
-  version: 18.01.07
+  version: 18.01.17
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 
 --[[ -- *import mkl_version
 
-mkl.version("Ryanna Libraries - binread.lua","18.01.07")
+mkl.version("Ryanna Libraries - binread.lua","18.01.17")
 mkl.lic    ("Ryanna Libraries - binread.lua","ZLib License")
 ]]
 
