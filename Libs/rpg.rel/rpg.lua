@@ -279,7 +279,8 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
     if not GALE_MS[csr] then GALE_MS[csr]=Use((RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile) end -- If Not GALE_MS.ContainsScript(csr) GALE_MS.Load(csr,RPGJCRDIR+st.Scriptfile+lua)
     assert( GALE_MS[csr] , (RPGJCRDIR or "SCRIPT/RPGCHARS/")..st.ScriptFile..lua.." not loaded correctly!")
     assert( GALE_MS[csr][st.CallFunction], "Function "..st.CallFunction.." not found!\ncsr="..csr.."\nChar="..char.."\nStat="..stat)
-    return  GALE_MS[csr][st.CallFunction](char,stat) --GALE_MS_Run csr,st.callfunction,[Char,Stat]
+    st.Value=GALE_MS[csr][st.CallFunction](char,stat)
+    return st.Value --GALE_MS_Run csr,st.callfunction,[Char,Stat]
     -- Me = New TMe
    end--  EndIf   
    local nomodint
@@ -866,9 +867,9 @@ for F in each( LChars ) do
         sv.ScriptFile = BT:getstring() --TrickyReadString(BT)
         sv.CallFunction = BT:getstring() --TrickyReadString(BT)    
     elseif tag==4 then --  Case 4
-        sv.value = BT:getint()-- ReadInt(BT)
+        sv.Value = BT:getint()-- ReadInt(BT)
     elseif tag==5 then -- Case 5
-        sv.modifier = BT:getint() -- ReadInt(BT)
+        sv.Modifier = BT:getint() -- ReadInt(BT)
     else --  Default
         --EndGraphics
         error("FATAL ERROR:Unknown tag in character ("..F..") stat file ("..tag..") within this savegame file ")
@@ -1063,8 +1064,9 @@ for key,ch in spairs(RPGChars) do
     writestringmap(dstr(ch.StrData),D.."/Character/"..key.."/StrData") -- SaveStringMap(BT,D+"Character/"+key+"/StrData",dstr(ch.strdata),"zlib")
     -- Stats
     BTE = binwrite(D.."/Character/"..key.."/Stats") -- BT.CreateEntry(D+"Character/"+key+"/Stats","zlib")
-    for skey,v in pairs(ch.Stats) do
+    for skey,v in spairs(ch.Stats) do
       --Local v:rpgstat = ch.stat(skey)
+      --CSay(serialize('stat.'..skey,v)) -- debug line
       BTE:putbyte(1) --WriteByte bte.stream,1
       BTE:putstring(skey) -- TrickyWriteString bte.stream,skey
       BTE:putbyte(2) -- WriteByte bte.stream,2
