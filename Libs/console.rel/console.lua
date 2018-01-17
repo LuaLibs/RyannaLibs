@@ -71,7 +71,24 @@ function con.usemyfont()
    love.graphics.setFont(con.font)
 end   
 
+local logfile
+function con.setlogfile(alogfile,deleteifwegotit)
+    if love.filesystem.isFile(alogfile) and deleteifwegotit~=false then love.filesystem.remove(alogfile) end
+    logfile=alogfile
+end    
+
+function con.log(atxt,r,g,b)
+   if not logfile then return end
+   local txt = replace(atxt or "","\n","<br>")
+   if not love.filesystem.isFile(logfile) then
+      love.filesystem.write(logfile,"<style>body{ color: #ffffff; background-color:#000000; font-family: Courier</style>\n")
+   end
+   love.filesystem.append(logfile,"<span style='color: rgb("..(r or 255)..","..(g or 255)..","..(b or 255)..");'>"..txt.."</span>")   
+end   
+   
+
 function con.write(txt,r,g,b,x,y)
+  con.log(txt,r,g,b)
   iin()
   con.curx = con.curx or 0
   con.cury = con.cury or 0
@@ -85,6 +102,7 @@ function con.write(txt,r,g,b,x,y)
 end
 
 function con.writeln(txt,r,g,b)
+   --con.log(txt.."<br>",r,g,b)
    con.write(txt,r,g,b)
    con.curx = 0
    con.cury = con.cury + 20
@@ -95,6 +113,7 @@ function con.writeln(txt,r,g,b)
       end
    end
    while stuff[1].y<-40 do table.remove(stuff,1) end
+   con.log("<br>",r,g,b)
 end
 
 function con.show() -- It goes without saying that this should only be calledin a "draw" callback, or things will not go as planned
