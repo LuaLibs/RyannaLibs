@@ -27,7 +27,8 @@ mkl.lic    ("Ryanna Libraries - binread.lua","ZLib License")
 
 local function gbyte(d)
      d.pos = d.pos + 1
-     assert(d.pos<=#d.data,"Reading past EOF")
+     --if d.pos>#d.data then for i=1,#d.data do CSay(i.."> "..string.byte(mid(d.data,i,1)).." > "..mid(d.data,i,1)) end end -- debug line
+     assert(d.pos<=#d.data,"Reading past EOF ("..d.pos.."/"..#d.data..")")
      return string.byte(mid(d.data,d.pos,1))
 end     
 
@@ -60,7 +61,7 @@ local function dseek(d,pos)
 end
 
 local function deof(d)
-    return d.pos>=#d.data
+    return d.pos>=#d.data or (d.pos+1==#d.data and mid(d.data,d.pos+1,1)=="\n")
 end
 
 return function(file,pure)
@@ -76,6 +77,7 @@ return function(file,pure)
     ret.pos  = 0
     ret.size = #ret.data
     ret.getbyte = gbyte
+    ret.read = gbyte
     ret.gethighnum = ghighnum
     ret.getint = gint
     ret.getlong = glong

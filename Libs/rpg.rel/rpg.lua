@@ -789,15 +789,17 @@ local ch--:RPGCharacter
 local tag
 local sv--:rpgstat
 local sp--:rpgpoints
-print( "Loading party: "..Dir)
+print( "Loading party:",p1,p2,p3 )
 --' Load party members
 BT = getfile("Party") -- JCR_ReadFile(loadfrom,D+"Party")
 ak = 0
 RPGParty = {}-- New String[ ReadInt(BT) ]
+BT:getint() -- Value not needed in Lua, but it had to be read or we'll crash!
 while not BT:eof() do -- While Not Eof(BT)
   --If ak>= Len(RPGParty) Print "WARNING! Too many party members in party!"; Exit
-  RPGParty[ak] = bt:getstring() --TrickyReadString(BT)
-  print("Party Member #"..ak.."> "..RPGParty[ak])
+  RPGParty[ak+1] = BT:getstring() --TrickyReadString(BT)
+  print("Party Member #"..ak.."> "..RPGParty[ak+1])
+  if CSay then CSay("Party Member #"..ak.."> "..RPGParty[ak+1]) end
   ak=ak+1
   end -- while
 -- CloseFile bt -- BinRead doesn't need it, as it's only a string being tranlated
@@ -819,7 +821,21 @@ if not p2 then
 elseif p1=='love' then
    LChars = love.filesystem.getDirectoryItems( p2.."/Character/" )
 elseif p1=='jcr' then
-   LChars = JCR_GetDir( p2.."/Character/" )
+  if not p3 then
+   local FChars = JCR_GetDir( p2.."/Character/",false )
+   LChars = {}
+   for ch in each(FChars) do
+       local chs=mysplit(ch,"/")
+       if chs[#chs]=="Name" and chs[#chs-2]=='Character' then LChars[#LChars+1]=chs[#chs-1] end
+   end
+  else
+   local FChars = JCR_GetDir( p2,p3.."/Character/",false )
+   LChars = {}
+   for ch in each(FChars) do
+       local chs=mysplit(ch,"/")
+       if chs[#chs]=="Name" and chs[#chs-2]=='Character' then LChars[#LChars+1]=chs[#chs-1] end
+   end
+  end  
 end             
 --' Let's now load the characters
 for F in each( LChars ) do
@@ -831,20 +847,21 @@ for F in each( LChars ) do
   --CloseFile BT
   -- Data
   --ch.strdata = ddat(LoadStringMap(LoadFrom,D+"Character/"+F+"/StrData"))
-  local tbdata = getfile('Character/'+F+'/StrData')
+  local tbdata = getfile('Character/'..F..'/StrData')
   local tsdata = readstringmap(tbdata,true)
   for k,v in pairs(tsdata) do api:DefData(ch,k,v) end     
   -- Stats
   BT=getfile("Character/"..F.."/Stats")--bt = JCR_ReadFile(LoadFrom,D+"Character/"+F+"/Stats")
   while not BT:eof() do
-    tag = bt:getbyte() --ReadByte(Bt)
+    tag = BT:getbyte() --ReadByte(Bt)
+    --CSay(tag) -- debug line
     --Select tag
     if tag==1 then --  Case 1
-        TN = BT:read() --TrickyReadString(BT)
+        TN = BT:getstring() --TrickyReadString(BT)
         sv = NewRPGStat()
         ch.Stats[TN]=sv
     elseif tag==2 then --  Case 2
-        sv.pure = bt:read() -- ReadByte(BT)
+        sv.pure = BT:read()==1 -- ReadByte(BT)
     elseif tag==3 then --  Case 3
         sv.ScriptFile = BT:getstring() --TrickyReadString(BT)
         sv.CallFunction = BT:getstring() --TrickyReadString(BT)    
@@ -854,15 +871,15 @@ for F in each( LChars ) do
         sv.modifier = BT:getint() -- ReadInt(BT)
     else --  Default
         --EndGraphics
-        error("FATAL ERROR:~n~nUnknown tag in character ("..F..") stat file ("..tag..") within this savegame file ")
+        error("FATAL ERROR:Unknown tag in character ("..F..") stat file ("..tag..") within this savegame file ")
         --End 
     end--  End Select
   end --  Wend  
   --==CloseFile bt
   --' Lists
-  BT = getfile('Character/'..F..'/List') -- JCR_ReadFile(LoadFrom,D+"Character/"+F+"/Lists")
-  while not BT:Eof() do
-    tag = bt:getbyte() -- ReadByte(BT)
+  BT = getfile('Character/'..F..'/Lists') -- JCR_ReadFile(LoadFrom,D+"Character/"+F+"/Lists")
+  while not BT:eof() do
+    tag = BT:getbyte() -- ReadByte(BT)
     --Select tag
     if tag==1 then --  Case 1  
         TN = BT:getstring() -- TrickyReadString(BT)
