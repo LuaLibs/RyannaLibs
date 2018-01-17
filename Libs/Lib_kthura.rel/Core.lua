@@ -6,13 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.16
+        Version: 18.01.17
 ]]
 
 -- $USE libs/errortag
+-- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.16")
+mkl.version("Ryanna Libraries - Core.lua","18.01.17")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -210,8 +211,28 @@ function kthura.buildblockmap(map)
   map.jumpergrid = t2Grid(map.blockmap)
 end
 
+local touchmap = {
+     TiledArea = function(obj,x,y) return x>=obj.COORD.x and x<=obj.COORD.x+obj.SIZE.width and y>=obj.COORD.y and y<=obj.COORD.y+obj.SIZE.height end,
+     Obstacle = function(obj,x,y)
+                   if not obj.LoadedTexture then return false end
+                   if y<obj.COORD.y-ImageHeight(obj.LoadedTexture) then return false end
+                   if y>obj.COORD.y then return false end
+                   local hw = ImageWidth(obj.LoadedTexture)/2
+                   return x>=obj.COORD.x-hw and x<=obj.COORD.x+hw
+                end
+     
+}
+touchmap.Zone = touchmap.TiledArea
+touchmap.Actor = touchmap.Obstacle
+
+function kthura.touch(obj,x,y)
+    local tf = touchmap[obj.KIND] or nothing
+    return tf(obj,x,y)
+end
+
 function kthura.makeobjectclass(kthuraobject)
      kthuraobject.draw = kthura.drawobject
+     kthuraobject.touch = kthura.touch
      kthuraobject.BM = BM[kthuraobject.KIND] or BM.Nada
 end
 
@@ -398,7 +419,7 @@ function kthura.Spawn(map,layer,spot,tag,xdata)
     actor.LAYER = layer -- Needed for typical actor stuff  
     actor.PARENT=map
     actor.LABELS=labels
-    actor.DOMINANCE=dom 
+    actor.DOMINANCE=dom or 20
     kthura.makeobjectclass(actor)
     for k,v in pairs(actorclass) do actor[k]=v end -- Adding the actor methods to the actor
     for k,v in pairs(xdata or {}) do actor[k] = v end
