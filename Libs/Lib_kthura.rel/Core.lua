@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.17
+        Version: 18.01.18
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.17")
+mkl.version("Ryanna Libraries - Core.lua","18.01.18")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -141,7 +141,7 @@ function kthura.map_block(map,layer,x,y)
    local gy = tonumber(g[2]) or 1
    local cx = math.floor(x/gx)
    local cy = math.floor(y/gy)
-   return map.blockmap[cx..","..cy]
+   return map.blockmap[layer][cx..","..cy]
 end   
 
 function kthura.rangeblock(map,layer,sx,sy,ex,ey)
@@ -175,7 +175,7 @@ function kthura.serialblock(map,layer) -- Returns a list of strings, giving a gl
   --kthura.buildblockmap(map)
   --print ( "DEBUG: SERIAL BLOCK CALL")
   --print( serialize("BLOCKMAP",map.blockmap) )
-  for k,v in pairs(map.blockmap) do
+  for k,v in pairs(map.blockmap[layer]) do
       ks = mysplit(k,",")
       kw = tonumber(ks[1]) or 0
       kh = tonumber(ks[2]) or 0
@@ -186,7 +186,7 @@ function kthura.serialblock(map,layer) -- Returns a list of strings, giving a gl
   for oy=0,h do for x=0,w do
       local y=oy+1
       ret[y] = ret[y] or ""
-      if map.blockmap[x..","..oy] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
+      if map.blockmap[layer][x..","..oy] then ret[y] = ret[y] .. "X" else ret[y] = ret[y] .. "." end
   end end
   return ret,w,h
 end  
@@ -196,7 +196,9 @@ function kthura.buildblockmap(map)
   local debug = false
   local dchat = function(txt) if debug then print("BUILD KTHURA BLOCKMAP: "..txt) if console then console.write("BUILD KTHURA BLOCKMAP: ",180,0,255) console.writeln(txt,255,255,0) end end end
   map.blockmap = {}    
-  for pi in each(p) do for lay,objl in pairs(map.MapObjects) do 
+  map.jumpergrid = {}  
+  for pi in each(p) do for lay,objl in pairs(map.MapObjects) do
+      map.blockmap[lay] = map.blockmap[lay] or {}
       dchat(pi.f.." "..lay)
       local g = mysplit(map.Grid[lay],"x") 
       local gx = tonumber(g[1]) or 1 local gy = tonumber(g[2]) or 1 
@@ -204,11 +206,12 @@ function kthura.buildblockmap(map)
       for o in each(objl) do
          if o[pi.f] then
            local serie = (BM[o.KIND] or BM.Nada)(o,grd)
-           for c in each(serie) do map.blockmap[c]=pi.b end
+           for c in each(serie) do map.blockmap[lay][c]=pi.b end
          end
       end   
+      
+  map.jumpergrid[lay] = t2Grid(map.blockmap[lay])
   end end 
-  map.jumpergrid = t2Grid(map.blockmap)
 end
 
 local touchmap = {
@@ -284,7 +287,7 @@ end
 local actorclass={}
 
 local function mgpath(A,x,y)
-   return A.PARENT.pathfinder:getPath(math.floor(A.COORD.x/32),math.floor(A.COORD.y/32),x,y)
+   return A.PARENT.pathfinder[A.LAYER]:getPath(math.floor(A.COORD.x/32),math.floor(A.COORD.y/32),x,y)
 end
 
 function actorclass:WalkTo(a1,a2)
@@ -311,7 +314,9 @@ function actorclass:WalkTo(a1,a2)
     end         
     ]]
     local parent=self.PARENT
-    parent.pathfinder = parent.pathfinder or PathFinder(parent.jumpergrid, kthura.searcher, 0)
+    --if parent.lastjg~=self.LAYER then parent.lastjg=self.LAYER parent.pathfinder
+    parent.pathfinder = parent.pathfinder or {}
+    parent.pathfinder[self.LAYER] = parent.pathfinder[self.LAYER] or PathFinder(parent.jumpergrid[self.LAYER], kthura.searcher, 0)
     -- This one would crash if a use requests stuff OUTSIDE the field, so let's do that elseway -- self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
     local pathyes,pathdata = pcall(mgpath,self,x,y)
     if not pathyes then
