@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.18
+        Version: 18.01.23
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.18")
+mkl.version("Ryanna Libraries - Core.lua","18.01.23")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -197,16 +197,28 @@ function kthura.buildblockmap(map)
   local dchat = function(txt) if debug then print("BUILD KTHURA BLOCKMAP: "..txt) if console then console.write("BUILD KTHURA BLOCKMAP: ",180,0,255) console.writeln(txt,255,255,0) end end end
   map.blockmap = {}    
   map.jumpergrid = {}  
+  map.bmsizes = {}
   for pi in each(p) do for lay,objl in pairs(map.MapObjects) do
       map.blockmap[lay] = map.blockmap[lay] or {}
+      map.bmsizes[lay] = map.bmsizes[lay] or {width=0,height=0}
+      local bms=map.bmsizes[lay]
       dchat(pi.f.." "..lay)
       local g = mysplit(map.Grid[lay],"x") 
-      local gx = tonumber(g[1]) or 1 local gy = tonumber(g[2]) or 1 
-      local grd={x=gx,y=gy} --or 1 
+      local gx = tonumber(g[1]) or 1 
+      local gy = tonumber(g[2]) or 1 
+      local grd={x=gx,y=gy} --or 1       
       for o in each(objl) do
          if o[pi.f] then
            local serie = (BM[o.KIND] or BM.Nada)(o,grd)
-           for c in each(serie) do map.blockmap[lay][c]=pi.b end
+           for c in each(serie) do 
+               map.blockmap[lay][c]=pi.b
+               local cs  = mysplit(c,",")
+               local csw = tonumber(cs[1]) or 0
+               local csh = tonumber(cs[2]) or 0
+               if csw>bms.width  then bms.width =csw  end 
+               if csh>bms.height then bms.height=csh  end 
+           end
+           
          end
       end   
       
