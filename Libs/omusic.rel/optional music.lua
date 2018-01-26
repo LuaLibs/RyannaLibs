@@ -1,7 +1,7 @@
 --[[
   optional music.lua
   
-  version: 18.01.10
+  version: 18.01.26
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,6 +21,7 @@ local o = {}
 local mozart -- will be used to store the music in
 local tag = { [true]='one', [false]='two'}
 local btag
+local pushed = {}
 
 
 -- 0 = never play music
@@ -55,8 +56,41 @@ function o.play(file)
    mozart:setLooping(true)
    love.audio.play(mozart)
    o.playing=upper(file)
+   
 end
 
+function o.push()
+   -- if not mozart then return end
+   if not o.playing then return end
+   pushed[#pushed+1]=o.playing
+end
+
+function o.pop()
+    if #pushed==0 then return end
+    local f = pushed[#pushed]
+    pushed[#pushed]=nil
+    o.play(f)
+end 
+
+o.pull = o.pop    
+
+-- Searches an entire dir and plays a tune at random... ;)
+function o.random(dir)
+   if o.use==0 then return end
+   local got=JCR_HasDir(dir) 
+   assert(got or o.use~=2,"Music folder '"..dir.."' has not been found!")
+   if not got then return end
+   local files = JCR_GetDir(dir)
+   local musics = {}
+   for f in each(files) do
+       local uf=f:upper() 
+       if suffixed(uf,".mp3") or suffixed(uf,".ogg") then musics[#musics+1]=f end
+   end
+   assert(#musics>0,"Cannot randomize empty music folder!") -- There must be at least one file in here recognized as a music file!
+   o.play(musics[love.math.random(1,#musics)])
+end
+
+   
 
 
 return o
