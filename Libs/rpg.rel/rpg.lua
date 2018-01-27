@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.01.17
+  version: 18.01.27
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -379,7 +379,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    if ch.StrData[key] then -- If MapContains(ch.strData,key) 
     td = ch.StrData[key] -- trpgdata(MapValueForKey(ch.strdata,key))
    else
-    td = Newtrpgdata(); 
+    td = NewTRPGData(); 
     ch.StrData[key]=td -- MapInsert ch.strdata,key,td
    end -- EndIf
    td.d=str
@@ -410,7 +410,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   If Not ST GALE_Error("Source Character's data doesn't exist",["F,RPGChar.LinkData","sourcechar,"+sourcechar,"targetchar,"+targetchar,"stat,"+dataname])
   MapInsert ch2.strdata,dataname,ST 
   End Method]]
-  function api:LinkData(sourcehcar,targetchar,statname) -- Method LinkList(sourcechar$,targetchar$,statname$) -- ' BLD: The list of two characters will be linked. This means that if one list changes the other will change and vice versa. Upon this definition, the targetchar's stat will be overwritten. After that the targetchar or the sourcechar do not matter any more, they will basically share the same stat. (This feature came to be due to its need in Star Story) :)<p>Should the targetchar's stat not exist it will be created in this function.
+  function api:LinkData(sourcechar,targetchar,statname) -- Method LinkList(sourcechar$,targetchar$,statname$) -- ' BLD: The list of two characters will be linked. This means that if one list changes the other will change and vice versa. Upon this definition, the targetchar's stat will be overwritten. After that the targetchar or the sourcechar do not matter any more, they will basically share the same stat. (This feature came to be due to its need in Star Story) :)<p>Should the targetchar's stat not exist it will be created in this function.
    local ch1 = grabchar(sourcechar)
    assert(ch1,"LINKDATA:  SOURCE Char doesn't exist> "..sourcechar) --If Not ch1 GALE_Error("Source Character doesn't exist",["F,RPGChar.LinkStatStat","sourcechar,"+sourcechar,"targetchar,"+targetchar,"stat,"+statname])
    local ch2 = grabchar(targetchar)
