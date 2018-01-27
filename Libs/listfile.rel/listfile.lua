@@ -1,7 +1,7 @@
 --[[
   listfile.lua
   
-  version: 18.01.03
+  version: 18.01.27
   Copyright (C) 2016, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -37,6 +37,7 @@ return function (file,real)
    else
       str = love.filesystem.read(file)
    end
+   assert(str,"listfile("..sval(file)..","..sval(real).."): Unable to retrieve data!")
    
    for brk in each(linebreaks) do
        local p,l = str:find(brk,1,true)
