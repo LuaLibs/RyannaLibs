@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.01.14
+  version: 18.01.27
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.01.14")
+mkl.version("Ryanna Libraries - qgfx.lua","18.01.27")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -137,6 +137,13 @@ function QuadImage(img,quad,x,y,frame)
   assert(i.images[frame or 1] , "QuadImage("..valstr(img)..",<quad>,"..x..","..y..","..(frame or 1).."): Frame out of bounds - I only have "..#i.images.." frame(s)")
   love.graphics.draw(i.images[frame or 1],quad,x,y)
 end  
+
+function WrapImage(img,hori,verti)
+  local i = (({ ['string'] = function() return assets[img] end,
+                ['table']  = function() return img end })[type(img)] or function() error('Unknown image tag type:'..type(img)) end)()
+  assert(i,"WrapImage("..valstr(img).."): I have no image for "..valstr(img))
+  for wimg in each(img.images) do wimg:setWrap(hori,verti) end
+end
 
 function ImageSizes(img)
 local i = (({ ['string'] = function() return assets[img] end,
