@@ -1,7 +1,7 @@
 --[[
   optional music.lua
   
-  version: 18.01.26
+  version: 18.01.28
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -84,7 +84,7 @@ function o.random(dir)
    local musics = {}
    for f in each(files) do
        local uf=f:upper() 
-       if suffixed(uf,".mp3") or suffixed(uf,".ogg") then musics[#musics+1]=f end
+       if suffixed(uf,".MP3") or suffixed(uf,".OGG") then musics[#musics+1]=f end
    end
    assert(#musics>0,"Cannot randomize empty music folder!") -- There must be at least one file in here recognized as a music file!
    o.play(musics[love.math.random(1,#musics)])
