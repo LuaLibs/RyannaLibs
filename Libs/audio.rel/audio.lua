@@ -1,7 +1,7 @@
 --[[
   audio.lua
   
-  version: 18.01.28
+  version: 18.01.29
   Copyright (C) 2016, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 --[[
 -- *import mkl_version
 
-mkl.version("Ryanna Libraries - audio.lua","18.01.28")
+mkl.version("Ryanna Libraries - audio.lua","18.01.29")
 mkl.lic    ("Ryanna Libraries - audio.lua","ZLib License")
 ]]
 
