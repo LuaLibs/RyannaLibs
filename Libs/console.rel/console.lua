@@ -1,7 +1,7 @@
 --[[
   console.lua
   
-  version: 18.01.17
+  version: 18.01.29
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -103,6 +103,11 @@ end
 
 function con.writeln(txt,r,g,b)
    --con.log(txt.."<br>",r,g,b)
+   local ltxt = mysplit(txt or "","\n")
+   if #ltxt>1 then
+      for lt in each(ltxt) do con.writeln(lt,r,g,b) end
+      return
+   end
    con.write(txt,r,g,b)
    con.curx = 0
    con.cury = con.cury + 20
