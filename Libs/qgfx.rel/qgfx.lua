@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.01.27
+  version: 18.01.30
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.01.27")
+mkl.version("Ryanna Libraries - qgfx.lua","18.01.30")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -107,12 +107,13 @@ Color = love.graphics.setColor
 SetColor = Color
 color = Color
 
-function white() Color(255,255,255) end
-function black() Color(  0,  0,  0) end
-function red()   Color(255,  0,  0) end
-function green() Color(  0,255,  0) end
-function blue()  Color(  0,  0,255) end
-function ember() Color(255,180,  0) end
+function white()  Color(255,255,255) end
+function black()  Color(  0,  0,  0) end
+function red()    Color(255,  0,  0) end
+function green()  Color(  0,255,  0) end
+function blue()   Color(  0,  0,255) end
+function ember()  Color(255,180,  0) end
+function yellow() Color(255,255,  0) end
 
 shit.LoadImage = LoadImage -- = love.graphics.newImage,love.graphics.newImage
 CLS = love.graphics.clear
