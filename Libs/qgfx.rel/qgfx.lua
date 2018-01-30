@@ -122,8 +122,8 @@ shit.CLS,shit.cls,shit.Cls,cls,Cls = CLS,CLS,CLS,CLS,CLS
 function DrawImage(img,x,y,frame,rad,sx,sy)
 local i = (({ ['string'] = function() return assets[img] end,
               ['table']  = function() return img end })[type(img)] or function() error('Unknown image tag type:'..type(img)) end)()
-assert(i,"DrawImage("..valstr(img)..","..x..","..y..","..(frame or 1).."): I have no image for "..valstr(img))
-assert(i.images[frame or 1] , "DrawImage("..valstr(img)..","..x..","..y..","..(frame or 1).."): Frame out of bounds - I only have "..#i.images.." frame(s)")
+assert(i,"DrawImage("..valstr(img)..","..sval(x)..","..sval(y)..","..(frame or 1).."): I have no image for "..valstr(img))
+assert(i.images[frame or 1] , "DrawImage("..valstr(img)..","..sval(x)..","..sval(y)..","..(frame or 1).."): Frame out of bounds - I only have "..#i.images.." frame(s)")
 -- This setup does not work the way it should, but that will be sorted out later.               
 --love.graphics.push()
 --love.graphics.origin(i.ox,i.oy)
