@@ -80,7 +80,8 @@ end
 function con.log(atxt,r,g,b)
    if not logfile then return end
    local txt = replace(atxt or "","\n","<br>")
-   txt = replace(txt,"\t","&#09;")
+   --txt = replace(txt,"\t","&#09;")
+   txt = replace(txt,"\t","     ")
    txt = replace(txt," " ,"&nbsp;")
    if not love.filesystem.isFile(logfile) then
       love.filesystem.write(logfile,"<style>body{ color: #ffffff; background-color:#000000; font-family: Courier</style>\n")
