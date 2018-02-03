@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.02.03
+  version: 18.01.27
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -315,7 +315,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   function api:StatExists(char,stat) -- Method StatExists(char$,Stat$) -- ' BLD: Returns 1 if the stat exists, returns 0 if stat does not exist
    local ch = grabchar(char)
    assert( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char)
-   return ch.Stat(stat)~=nil
+   return ch:Stat(stat)~=nil
   end -- End Method
 
   
