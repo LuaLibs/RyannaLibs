@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.01.27
+  version: 18.02.07
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -428,7 +428,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    local ch = grabchar(char)
    assert( ch ,"Character doesn't exist\nRPGChar.GetData\nchar="..char)
    --'Return ch.strdata.value(key)
-   local td=chstrdata[key]-- :trpgdata = trpgdata(MapValueForKey(ch.strdata,key))
+   local td=ch.StrData[key]-- :trpgdata = trpgdata(MapValueForKey(ch.strdata,key))
    if not td then return "" end
    return td.d
   end -- End Method
@@ -453,7 +453,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   MapRemove ch.strdata,key
   End Method
 ]]
-   function api:DetData(char,key)
+   function api:DelData(char,key)
     local ch = grabchar(char)
     assert( ch ,"Character doesn't exist\nRPGChar.DelData\nchar="..char)
     if not ch.StrData[key] then -- MapContains(ch.stats,stat) 
