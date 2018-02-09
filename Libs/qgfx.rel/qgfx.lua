@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.01.30
+  version: 18.02.09
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,14 +28,17 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.01.30")
+mkl.version("Ryanna Libraries - qgfx.lua","18.02.09")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
 
-function LoadImage(file,assign)
+function LoadImage(file,assign,onlynew)
   local ret = { ox = 0, oy = 0, t="image", file=file,
               }
+  if onlynew and assign then
+     return assign
+  end                 
   if type(file)=='string' then
      --print('LoadImage: ',file,assign)
      --if love.filesystem.isDirectory(file:upper()) then
