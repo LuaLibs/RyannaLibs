@@ -1,7 +1,7 @@
 --[[
   stringmapfile.lua
   
-  version: 18.01.16
+  version: 18.02.25
   Copyright (C) 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -55,6 +55,7 @@ function writestringmap(smap,file,real)
     for k,v in spairs(smap) do
         bt:putbyte(1)
         print(type(v),k,"=",v)
+        assert(type(v)=='string' or type(v)=='number',"writestringmap([table],'"..file.."',"..sval(real)..'): Key '..k..' is a '..type(v)..' and I only want strings!')
         bt:writestring(k)
         bt:writestring(v)
     end
@@ -63,7 +64,7 @@ function writestringmap(smap,file,real)
 end        
 
 --[[
-mkl.version("Ryanna Libraries - stringmapfile.lua","18.01.16")
+mkl.version("Ryanna Libraries - stringmapfile.lua","18.02.25")
 mkl.lic    ("Ryanna Libraries - stringmapfile.lua","ZLib License")
 ]]
 
