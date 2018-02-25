@@ -1,7 +1,7 @@
 --[[
   gamevar.lua
   
-  version: 18.01.16
+  version: 18.02.25
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -122,5 +122,5 @@ end
 function Var.TV(tag) return vars:TV(tag) end
        
 
-local gv = { Var=Var, C=Var.C, D=Var.D,Done=Done,S=Var.S,G=Var.G, Kill=Var.Kill, Clear=Var.Clear, TV=Var.TV }
+local gv = { Var=Var, C=Var.C, D=Var.D,Done=Done,S=Var.S,G=Var.G, Kill=Var.Kill, Clear=Var.Clear, TV=Var.TV, Inc=Inc, Dec=Dec }
 return gv
