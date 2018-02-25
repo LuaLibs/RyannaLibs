@@ -655,11 +655,11 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   function api:IncStat(char,Statn,value) ---- ' BLD: Increases a stat by the given number. If value is either 0 or undefined, the stat will be increased by 1
     local v=value or 1
     if v==0 then v=1 end
-    api:DefStat(char,statn,api:Stat(char,statn)+v)
+    api:DefStat(char,Statn,api:Stat(char,Statn)+v)
   end --End Method
 
   function api:DecStat(char,Statn,value) -- BLD: Decreases a stat by the given number. If value is either 0 or undefined, the stat will be decreased by 1
-    api:Inc(char,Statn,0-(value or 1))
+    api:IncStat(char,Statn,0-(value or 1))
   end --[[  
   Local v=value
   If v=0 v=1
