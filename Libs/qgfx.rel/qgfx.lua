@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.02.09
+  version: 18.02.25
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.02.09")
+mkl.version("Ryanna Libraries - qgfx.lua","18.02.25")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -36,7 +36,7 @@ mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 function LoadImage(file,assign,onlynew)
   local ret = { ox = 0, oy = 0, t="image", file=file,
               }
-  if onlynew and assign then
+  if onlynew and assets[assign] then
      return assign
   end                 
   if type(file)=='string' then
@@ -208,7 +208,7 @@ end
 
 
 function HotCenter(img)
-local i = (({ ['string'] = function() return assets[img] end,
+local i = (({ ['string'] = function() assert(assets[img],"No image on: "..img) return assets[img] end,
               ['table']  = function() return img end })[type(img)])()
 i.ox=i.image:getWidth()/2
 i.oy=i.image:getHeight()/2
