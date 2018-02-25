@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.02.07
+  version: 18.02.25
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -94,6 +94,8 @@ function NewRPGStat() -- Type RPGStat
   ret.CallFunction=""
   ret.Value=0
   ret.Modifier=0
+  function ret:Inc(value) self.Value = self.Value + (value or 0) end
+  function ret:Dec(value) self:Inc(-(value or 0)) end
   return ret
 end  
   
@@ -460,7 +462,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
       ConsoleWrite("DelStat: WARNING! Character "..char.." does not HAVE a data slot named: "..stat)
       return
     end -- EndIf
-    ch.stats[key]=nil --MapRemove ch.stats,stat
+    ch.StrData[key]=nil --MapRemove ch.stats,stat
    end 
 
   
