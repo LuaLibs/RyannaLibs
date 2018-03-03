@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.13
+        Version: 18.03.03
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.01.13")
+mkl.version("Ryanna Libraries - Draw.lua","18.03.03")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -114,7 +114,9 @@ local drawclass = {
        LoadTexture=function (a)
             local r = genloadtexture(a)
             local tx = a.TEXTURE:upper()
-            if (love.filesystem.isDirectory(tx) and (love.filesystem.isFile(tx.."/HOTSPOINTS"))) or love.filesystem.isFile(tx) then
+            local w,h = ImageSizes(r)
+            --if (love.filesystem.isDirectory(tx) and (love.filesystem.isFile(tx.."/HOTSPOINTS"))) or love.filesystem.isFile(tx) then
+            if (JCR_HasDir(tx) and (not JCR_Exists(tx.."/HOTSPOTS.GINI"))) or JCR_Exists(tx) then
                Hot(r,w/2,h)
             end
             return r
