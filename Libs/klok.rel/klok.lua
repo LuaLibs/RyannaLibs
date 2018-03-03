@@ -29,6 +29,7 @@ local tijd = {}
      
      
 local function timermethod_wait(self,altmax)
+   local t
    repeat
        t = love.timer.getTime()
    until math.abs(t-self.old)>(altmax or ret.max or 1)
@@ -36,14 +37,14 @@ local function timermethod_wait(self,altmax)
 end
 
 local function timermethod_passed(self)
-   t = love.timer.getTime()
+   local t = love.timer.getTime()
    return ath.abs(t-self.old)
 end   
    
      
 function tijd:CreateTimer(mtime)
     local ret={
-        oldtime = love.timer.getTime(),
+        old = love.timer.getTime(),
         max=mtime,
         wait=timermethod_wait,
         sleep=timermethod_sleep,
