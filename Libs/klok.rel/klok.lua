@@ -33,7 +33,7 @@ local function timermethod_wait(self,altmax)
    repeat
        t = love.timer.getTime()
    until math.abs(t-self.old)>(altmax or ret.max or 1)
-   oldtime=t
+   self.old=t
 end
 
 local function timermethod_passed(self)
