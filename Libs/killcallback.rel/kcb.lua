@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.01.09
+  version: 18.03.07
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -105,6 +105,8 @@ function keyhit(key)
     lmousehit[but]= nil
     return r
  end
+ 
+ mouseclick = mousehit
 
 
 function skeyhit(key)
