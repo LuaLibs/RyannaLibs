@@ -1,7 +1,7 @@
 --[[
   text.lua
   
-  version: 18.02.25
+  version: 18.03.08
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -82,7 +82,7 @@ function itext.write(atext,x,y,alh,alv)
     local w,h=sizebygottenletters(letters) --print('height "'..text.."' is ",w,"x",h) -- debug
     local tx,ty = x,y
     if alh==nil or alh==0 or alh=='l' then tx=x
-    elseif         alh==1 or alh=='r' then ty=x-w
+    elseif         alh==1 or alh=='r' then tx=x-w
     elseif         alh==2 or alh=='c' then tx=x-math.floor(w/2) end
     if alv==nil or alv==0 or alv=='u' then ty=y
     elseif         alv==1 or alv=='d' then ty=y-h
