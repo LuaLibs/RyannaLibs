@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.02.25
+  version: 18.03.16
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.02.25")
+mkl.version("Ryanna Libraries - qgfx.lua","18.03.16")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -217,4 +217,15 @@ end; shit.HotCenter = HotCenter
 QText=love.graphics.print
 shit.QText=QText
 
+
+function Text2Img(txt,font,hot)
+   assign(txt,"No text to convert into an image")
+   local td = love.graphics.newText(font,txt)
+   local ret = { ox = 0, oy = 0, t="image", file='text:'..txt,
+              } 
+   ret.image=td
+   ret.images={td}
+   QHot(ret,hot or 'lt')
+   return ret              
+end
 return shit
