@@ -1,7 +1,7 @@
 --[[
   klok.lua
   klok
-  version: 18.03.03
+  version: 18.04.06
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@ local function timermethod_wait(self,altmax)
    local t
    repeat
        t = love.timer.getTime()
-   until math.abs(t-self.old)>(altmax or ret.max or 1)
+   until math.abs(t-self.old)>(altmax or self.max or 1)
    self.old=t
 end
 
