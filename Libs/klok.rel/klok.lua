@@ -40,7 +40,11 @@ local function timermethod_passed(self)
    local t = love.timer.getTime()
    return math.abs(t-self.old)
 end   
-   
+
+local function timermethod_enough(self,altmax)
+   local t = self:passed()
+   return t > (altmax or self:max)
+end   
      
 function tijd:CreateTimer(mtime)
     local ret={
@@ -49,6 +53,7 @@ function tijd:CreateTimer(mtime)
         wait=timermethod_wait,
         sleep=timermethod_sleep,
         passed=timermethod_passed
+        enough=timermethod_enough
     }
     return ret
 end
