@@ -43,7 +43,7 @@ end
 
 local function timermethod_enough(self,altmax)
    local t = self:passed()
-   return t > (altmax or self:max)
+   return t > (altmax or self.max)
 end   
      
 function tijd:CreateTimer(mtime)
