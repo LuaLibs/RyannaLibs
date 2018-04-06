@@ -134,6 +134,21 @@ love.graphics.draw(i.images[frame or 1],x,y,rad or 0,i.scalex or sx or 1, i.scal
 --love.graphics.pop()                   
 end 
 
+local function metiImage(self) -- Method iImage
+    DrawImage ( self.img,self.x,self.y,self.frame)
+end
+    
+function iImage(img,x,y)
+   local im = { img=img,x=x,y=y,frame=0,draw=metiImage }
+   return function()
+      im.frame=im.frame+1
+      if im.frame>#im.images then return nil end
+      return im
+   end
+end
+
+function ImgFrames(image) return #image.images end
+
 function QuadImage(img,quad,x,y,frame)
   local i = (({ ['string'] = function() return assets[img] end,
                 ['table']  = function() return img end })[type(img)] or function() error('Unknown image tag type:'..type(img)) end)()
