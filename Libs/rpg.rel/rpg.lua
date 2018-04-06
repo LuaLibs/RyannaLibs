@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.02.25
+  version: 18.04.06
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -309,6 +309,21 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    end -- End If    
    st.Value=value
   end -- End Method
+  
+  function api:iStat(char)
+     local i = 0 
+     local stats = {}
+     local ch=grabchar(char)
+     assert ( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char.."\niStat="..stat)
+     for s,d in spairs(ch.Stats) do
+         stats[#stats+1] = {stat=s,value=self:Stat(char,s),data=d}
+     end
+     return function()
+         i = i + 1
+         if not stats[i] then return nil,nil,nil end
+         return stats[i].stat,stats[i].value,stats[i].data
+     end
+  end    
   
   function api:NewStat(char,stat,value) -- Method NewStat(char$,Stat$,Value) -- ' BLD: Shortcut to DefStat with OnlyIfNotExist defined ;)
     api:DefStat(char,stat,balue,true)
