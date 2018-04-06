@@ -52,7 +52,7 @@ function tijd:CreateTimer(mtime)
         max=mtime,
         wait=timermethod_wait,
         sleep=timermethod_sleep,
-        passed=timermethod_passed
+        passed=timermethod_passed,
         enough=timermethod_enough
     }
     return ret
