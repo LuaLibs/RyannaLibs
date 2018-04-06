@@ -38,7 +38,7 @@ end
 
 local function timermethod_passed(self)
    local t = love.timer.getTime()
-   return ath.abs(t-self.old)
+   return math.abs(t-self.old)
 end   
    
      
