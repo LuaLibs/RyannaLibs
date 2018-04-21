@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.03.07
+  version: 18.04.21
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,6 +28,8 @@ print("Kill Callback") -- This line is just a checkup for me.
 local lkeyhit,lskeyhit,lmousehit = {},{},{}
 
 local ltick
+
+local drawaddons = {prior={},after={}}
 
 acb = {}
 quitquestion = quitquestion or "When you quit now any unsaved progress will be lost.\nAre you sure you want to quit?"
@@ -64,12 +66,19 @@ function love.quit()
    return pressedbutton==2
 end   
 
+function kcbdraw(d,func)
+    assert(drawaddons[d],"Hey I don't know how to add something to kcbdrawtype "..sval(d))
+    drawaddons[d][#drawaddons[d]+1]=func
+end    
+
 function love.draw()
+   for f in each(drawaddons.prior) do f() end
    if acb.odraw then
       acb:odraw()
    else
      (acb.draw or nothing)()
   end
+   for f in each(drawaddons.after) do f() end  
 end
 
 local updatefuncs = {}
