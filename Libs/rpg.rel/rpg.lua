@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.04.06
+  version: 18.04.21
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -314,7 +314,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
      local i = 0 
      local stats = {}
      local ch=grabchar(char)
-     assert ( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char.."\niStat="..stat)
+     assert ( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char)
      for s,d in spairs(ch.Stats) do
          stats[#stats+1] = {stat=s,value=self:Stat(char,s),data=d}
      end
@@ -663,8 +663,8 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
      local ch2 = grabchar(targetchar)
      assert(ch2,"LINKDATA:  TARGET Char doesn't exist> "..targetchar) -- If Not ch2 GALE_Error("Target Character doesn't exist",["F,RPGChar.LinkStatStat","sourcechar,"+sourcechar,"targetchar,"+targetchar,"stat,"+statname])
      local ST = ch1.Points[pointsname]
-     assert(ST,"Source Character's points doesn't exist\nRPGChar.LinkPoints\nsourcechar="..sourcechar.."\ntargetchar="..targetchar.."\nstat="..statname)
-     ch2.Points[pointname]=ST -- MapInsert ch2.Stats,statname,ST
+     assert(ST,"Source Character's points doesn't exist\nRPGChar.LinkPoints\nsourcechar="..sourcechar.."\ntargetchar="..targetchar.."\nstat="..pointsname)
+     ch2.Points[pointsname]=ST -- MapInsert ch2.Stats,statname,ST
   end  --End Method
 
   function api:IncStat(char,Statn,value) ---- ' BLD: Increases a stat by the given number. If value is either 0 or undefined, the stat will be increased by 1
