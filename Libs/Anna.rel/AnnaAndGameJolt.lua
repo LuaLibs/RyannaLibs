@@ -81,7 +81,7 @@ function Anna_Request(data)
   local getdata = {}
   local didclose,d
   for i,cl in ipairs(lines) do 
-    chat(i.."~t"..cl)
+    chat(i.."\t"..cl)
     if cl=="HANDSHAKE" and lines[i-1]=="GREET:ANNA" then 
        allowread=true
     elseif (cl=="BYEBYE:SEEYA" or cl=='BYBYE:SEEYA') and allowread then
