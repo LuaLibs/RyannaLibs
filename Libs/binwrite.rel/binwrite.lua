@@ -1,7 +1,7 @@
 --[[
   binwrite.lua
   
-  version: 18.01.16
+  version: 18.04.27
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -68,6 +68,8 @@ return function(file,real)
     ret.putstring=pstring
     ret.putbool = pbool
     ret.writestring=pstring
+    ret.writebyte=pbyte
     ret.close=pclose
     return ret
 end
+
