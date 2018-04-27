@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.04.21
+  version: 18.04.27
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1143,7 +1143,7 @@ for ch1,och1 in spairs(RPGChars) do for ch2,och2 in spairs(RPGChars) do
     for stat,_ in spairs(och1.Stats) do -- =EachIn MapKeys(och1.stats)
       if och1:Stat(stat)==och2:Stat(stat) then SaveRPGLink( BTE,"Stat",ch1,ch2,stat) end
     end--  Next
-    for stat,_ in spairs(och1.strdata) do
+    for stat,_ in spairs(och1.StrData) do
       --If MapValueForKey(och1.strdata,stat)=MapValueForKey(och2.strdata,stat) SaveRPGLink BTE,"Data",ch1,ch2,stat
       if och1.StrData[stat]==och2.StrData[stat] then  SaveRPGLink( BTE,"Data",ch1,ch2,stat) end
     end--  Next
