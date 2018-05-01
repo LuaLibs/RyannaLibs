@@ -1,7 +1,7 @@
 --[[
   klok.lua
   klok
-  version: 18.04.06
+  version: 18.05.01
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -45,15 +45,21 @@ local function timermethod_enough(self,altmax)
    local t = self:passed()
    return t > (altmax or self.max)
 end   
-     
+
+local function timermethod_reset(self)
+   self.old=love.timer.getTime()
+end
+        
 function tijd:CreateTimer(mtime)
+    assert(type(self)=='table','Did you use . in stead of : ?')
     local ret={
         old = love.timer.getTime(),
         max=mtime,
         wait=timermethod_wait,
-        sleep=timermethod_sleep,
+        sleep=timermethod_wait,
         passed=timermethod_passed,
-        enough=timermethod_enough
+        enough=timermethod_enough,
+        reset=timermethod_reset
     }
     return ret
 end
