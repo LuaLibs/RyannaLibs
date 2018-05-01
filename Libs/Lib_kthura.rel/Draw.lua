@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.03.03
+        Version: 18.05.01
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.03.03")
+mkl.version("Ryanna Libraries - Draw.lua","18.05.01")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -81,7 +81,7 @@ local drawclass = {
        LoadTexture=function(o)
           local r = genloadtexture(o)
           local w,h = ImageSizes(r)
-          Hot(r,w/2,h)
+          if not(JCR_Exists(o.TEXTURE.."/HOTSPOTS.GINI")) then Hot(r,w/2,h) end
           return r
        end,
        draw = function(self,camx,camy)
