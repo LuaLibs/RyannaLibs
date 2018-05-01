@@ -6,19 +6,19 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.01.23
+        Version: 18.05.01
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.01.23")
+mkl.version("Ryanna Libraries - Core.lua","18.05.01")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
 -- $IF $IGNORE
-kthura ={}
+local kthura ={}
 -- $FI  
 
 
@@ -251,6 +251,20 @@ function kthura.makeobjectclass(kthuraobject)
      kthuraobject.BM = BM[kthuraobject.KIND] or BM.Nada
 end
 
+function kthura.allobjects(map)
+    list = {}
+    local i=0
+    for lay,objl in spairs(map.MapObjects) do for o in each(objl) do
+        list[#list+1]={o=o,l=lay}
+    end end
+    return function()
+       i=i+1
+       if not list[i] then return nil,nil end
+       return list[i].o,list[i].l
+    end
+end       
+    
+
 function kthura.makeclass(map)
      for lay,objl in pairs(map.MapObjects) do for o in each(objl) do kthura.makeobjectclass(o) end end
      map.draw = kthura.drawmap
@@ -261,6 +275,7 @@ function kthura.makeclass(map)
      map.block = kthura.map_block
      map.rblock = kthura.rangeblock
      map.obj = kthura.obj
+     map.allobjects = kthura.allobjects
 end
 
 function kthura.remaptags(map)
