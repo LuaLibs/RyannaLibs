@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.04.06
+  version: 18.05.04
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.04.06")
+mkl.version("Ryanna Libraries - qgfx.lua","18.05.04")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -117,6 +117,15 @@ function green()  Color(  0,255,  0) end
 function blue()   Color(  0,  0,255) end
 function ember()  Color(255,180,  0) end
 function yellow() Color(255,255,  0) end
+
+function ColorHSV(h,s,v,a)
+   -- $USE libs/hsv
+   color(hsv(h,s,v,a)) -- Yes! This works, trust me :P
+end
+colorhsv=ColorHSV
+SetColorHSV=ColorHSV
+shit.ColorHSV=ColorHSV
+shit.colorhsv=ColorHSV   
 
 shit.LoadImage = LoadImage -- = love.graphics.newImage,love.graphics.newImage
 CLS = love.graphics.clear
