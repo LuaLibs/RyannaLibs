@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.05.05
+  version: 18.05.07
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,13 +28,19 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.05.05")
+mkl.version("Ryanna Libraries - qgfx.lua","18.05.07")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
+function WrapImage(image,horizontaal,verticaal)
+   for img in each(image.images) do
+       img:setWrap(horizontaal,verticaal)
+   end
+end       
+
 
 function LoadImage(file,assign,onlynew)
-  local ret = { ox = 0, oy = 0, t="image", file=file,
+  local ret = { ox = 0, oy = 0, t="image", file=file, setWrap=WrapImage
               }
   if onlynew and assets[assign] then
      return assign
