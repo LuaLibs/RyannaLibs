@@ -43,7 +43,7 @@ end
 function pad.ExtractDir(filename)
    local a = replace(filename,"\\","/")
    local p = findlast(a,"/")    
-   if not p then return a end
+   if not p then return "" end
    return left(a,p)
 end
 
@@ -55,19 +55,19 @@ function pad.StripDir(filename)
 end
 
 function pad.ExtractExt(filename)
-   local a = replace(filename,"\\","/")
+   local a = pad.StripDir(replace(filename,"\\","/"))
    local p = findlast(a,".")    
-   if not p then return a end
+   if not p then return "" end
    if p==1 or (mid(a,p-1,1)=="/") then return a end -- Unix hidden files
-   return left(a,p)
+   return right(a,(#a-1)-p)
 end
 
 function pad.StripExt(filename)
-   local a = replace(filename,"\\","/")
+   local a = pad.StripDir(replace(filename,"\\","/"))
    local p = findlast(a,".")    
    if not p then return a end
    if p==1 or (mid(a,p-1,1)=="/") then return a end -- Unix hidden files
-   return right(a,#a-p)
+   return left(a,p-1)
 end
 
 
