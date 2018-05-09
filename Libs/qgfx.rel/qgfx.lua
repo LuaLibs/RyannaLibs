@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.05.07
+  version: 18.05.09
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.05.07")
+mkl.version("Ryanna Libraries - qgfx.lua","18.05.09")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
 
@@ -113,15 +113,16 @@ end Rect=DrawRect
 
 local loveversion = {}
 loveversion.major,loveversion.minor,loveversion.revision,loveversion.codename=love.getVersion( )
+print("QGFX library now running in love version: "..loveversion.major.."."..loveversion.minor.."."..loveversion.revision.." ("..loveversion.codename..")")
 
-if loveversion.major>0 or (loveversion.major==0 and loveversion.minor<11) then 
+if (loveversion.major==0 and loveversion.minor<11) then 
    Color = love.graphics.setColor
    print("Color function copied as the 0-255 scale has been honored")
 else
    Color = function(r,g,b,a)
      love.graphics.setColor(r/255,g/255,b/255,a/255)
-     print("Color function set to turn the 0-255 scale into the 0-1 (only to be calculated back for the true calculation, so I wonder who the imbecile is who brought this up!)")
    end
+   print("Color function set to turn the 0-255 scale into the 0-1 (only to be calculated back for the true calculation, so I wonder who the imbecile is who brought this up!)")
 end      
 
 SetColor = Color
@@ -197,6 +198,8 @@ local i = (({ ['string'] = function() return assets[img] end,
               )[type(img)])()
 local w,h
 assert(i,"I have no image for "..valstr(img))
+assert(i.images,"It appears this image table has no image frames")
+assert(i.images[1],"No frame #1")
 w = i.images[1]:getWidth()
 h = i.images[1]:getHeight()
 return w,h
