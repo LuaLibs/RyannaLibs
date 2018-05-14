@@ -1,7 +1,7 @@
 --[[
   path.lua
   
-  version: 18.05.09
+  version: 18.05.14
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -39,6 +39,7 @@ function pad.DirSplit(filename)
     local a = replace(filename,"\\","/")
     return mysplit(a,"/")
 end
+pad.SplitDir=pad.DirSplit
 
 function pad.ExtractDir(filename)
    local a = replace(filename,"\\","/")
@@ -59,7 +60,7 @@ function pad.ExtractExt(filename)
    local p = findlast(a,".")    
    if not p then return "" end
    if p==1 or (mid(a,p-1,1)=="/") then return a end -- Unix hidden files
-   return right(a,(#a-1)-p)
+   return right(a,(#a)-p)
 end
 
 function pad.StripExt(filename)
@@ -76,6 +77,8 @@ end
 DirSplit=pad.DirSplit
 ExtractDir=pad.ExtractDir   
 StripDir=pad.StripDir
+ExtractExt=pad.ExtractExt
+StripExt=pad.StripExt
 
 
 return pad
