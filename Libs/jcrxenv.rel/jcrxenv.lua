@@ -19,9 +19,15 @@
 ]]
 local m={}
 
-function m.get(v)
+local sep=":"
+-- $IF $WINDOWS
+   sep=";"
+-- $FI   
+
+function m.get(v,strict)
     local success,data = JCRXCall({'get',v})
-    assert(success,data)
+    if strict then assert(success,data)
+    elseif not success then return nil end
     return mysplit(data,"\n")[1] -- Make sure no pipe impurities make it through
 end
 
@@ -30,9 +36,20 @@ function m.set(key,value)
     assert(success,e)
 end
 
-function m.getmulti(v)
-    return mysplit(m.get(v),":")
+function m.getmulti(v,strict)
+    local r = m.get(v,strict)
+    if not r then return nil end    
+    return mysplit(r,sep)
 end    
 
+function m.setmulti(k,v)
+    local r=""
+    for p in each(v) do
+        if r~="" then r = r .. sep end
+        r = r .. p
+    end
+    return m.set(k,r)
+end    
+    
 
 return m
