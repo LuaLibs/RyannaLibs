@@ -15,12 +15,33 @@ not longer than 70 years ago, you can deem this file
 with basically comes down to the same lack of
 restriction the public domain offers. (YAY!)
 *********************************************************** 
-Version 18.05.15
+Version 18.05.20
 ]]
-local function glob(pattern)
+local function glob(pattern) -- Only local to prevent conflicts between the var in which this is returned and function itself.
     local success,data = JCRXCall({'glob',pattern})
     assert(success,data)
     return mysplit(data,"\n")
 end
 
+function cdglob(pdir,pattern)
+    local dir = replace(pdir,"\\","/")
+    
+    -- $IF $WINDOWS
+       if (not dir) or dir=="" then dir="C:/" end
+    -- $FI
+    
+    -- $IF !$WINDOWS
+       if (not dir) or dir=="" then dir="/" end
+    -- $FI
+    
+    if not suffixed(dir,"/") then dir=dir.."/" end
+    if dir=="~/" then dir = os.getenv("HOME").."/" end
+    print("cd.glob: "..dir..pattern)    
+    local data=glob(dir..pattern)
+    for i=1,#data do
+        data[i]=right(data[i],#data[i]-#dir)
+    end
+    return data
+end
+    
 return glob
