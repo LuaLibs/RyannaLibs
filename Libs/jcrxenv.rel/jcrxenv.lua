@@ -1,7 +1,7 @@
 --[[
   jcrxenv.lua
   
-  version: 18.05.18
+  version: 18.05.21
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@ function m.get(v,strict)
 end
 
 function m.set(key,value)
-    local success,e = JCRXCall({'set',key,valye})
+    local success,e = JCRXCall({'set',key,value})
     assert(success,e)
 end
 
