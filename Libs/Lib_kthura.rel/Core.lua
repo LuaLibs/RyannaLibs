@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.01
+        Version: 18.05.21
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.05.01")
+mkl.version("Ryanna Libraries - Core.lua","18.05.21")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -320,13 +320,13 @@ end
 function actorclass:WalkTo(a1,a2)
     local x,y
     if     type(a1)=='number' and type(a2)=='number' then x,y=a1,a2 
-    elseif type(a1)=='string' and type(a2)==nil      then
+    elseif type(a1)=='string' and type(a2)=='nil'    then
          local map=self.PARENT
          local o=map.TagMap[self.LAYER][a1]
          assert(o,"Trying to walk to non-existent object tag: "..a1)
          x,y=math.floor(o.COORD.x/32),math.floor(o.COORD.y/32)
     else
-         error("<actor>.WalkTo(<map>,"..sval(a1)..","..sval(a2).."): Invalid input!")
+         error("["..type(self).." actor]:WalkTo("..type(a1).." "..sval(a1)..","..type(a2).." "..sval(a2).."): Invalid input!")
     end
     if x==0 or y==0 then return false end
     --[[ This is a reference to code that is now officially deprecated!
