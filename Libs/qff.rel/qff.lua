@@ -1,7 +1,7 @@
 --[[
   qff.lua
   
-  version: 18.05.20
+  version: 18.05.21
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,9 +19,11 @@
 ]]
 local me = {}
 
-function me.filetype(file)
+function me.filetype(pfile)
+    local file=pfile
+    if prefixed(file,"~/") then file=os.getenv("HOME")..right(file,#file-2) end
     local success,dat = JCRXCall({'type',file})
-    dat = mytrim(dat)
+    dat = trim(dat)
     if success then return dat end
     if suffixed(dat,"no such file or directory") then return "non-existent" end
     return nil
@@ -40,5 +42,8 @@ function me.exists(file)
    return r~=nil and r~="non-existent" 
 end           
 
+me.IsDir=me.isdir
+me.IsFile=me.isfile
+me.Exists=me.exists
 
 return me
