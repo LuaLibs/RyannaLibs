@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.21
+        Version: 18.05.26
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.05.21")
+mkl.version("Ryanna Libraries - Core.lua","18.05.26")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -245,10 +245,15 @@ function kthura.touch(obj,x,y)
     return tf(obj,x,y)
 end
 
+function kthura.pos(obj)
+    return obj.COORD.x,obj.COORD.y
+end    
+
 function kthura.makeobjectclass(kthuraobject)
      kthuraobject.draw = kthura.drawobject
      kthuraobject.touch = kthura.touch
      kthuraobject.BM = BM[kthuraobject.KIND] or BM.Nada
+     kthuraobject.pos = kthura.pos
 end
 
 function kthura.allobjects(map)
