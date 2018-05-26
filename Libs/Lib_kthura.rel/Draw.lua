@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.01
+        Version: 18.05.26
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.05.01")
+mkl.version("Ryanna Libraries - Draw.lua","18.05.26")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -256,6 +256,17 @@ function kthura.drawobject(self,camx,camy)
      local c = drawclass[self.KIND]
      assert(c,errortag("kthura.drawobject",{self,camx,camy}," kind '"..self.KIND.."' not supported in this version of the Kthura Drawing Engine"))
      self.LoadedTexture = (c.LoadTexture or genloadtexture)(self)
+     self.ROTATIONFACTOR = self.ROTATIONFACTOR or 'DEG'
+     if     self.ROTATIONFACTOR=='DEG' then
+            -- $USE libs/qmath
+            self.ROTATIONORIGINAL = self.ROTATION
+            self.ROTATION=qmath.Deg2Rad(self.ROTATION)
+            self.ROTATIONFACTOR= 'RAD' 
+     elseif self.ROTATIONFACTOR=='RAD' then
+            -- Just be here... ok?
+     else   
+            error("Unknown rotation factor: "..sval(self.ROTATIONFACTOR))
+     end            
      c.draw(self,camx,camy)    
 end
 
