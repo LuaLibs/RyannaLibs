@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.26
+        Version: 18.05.30
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.05.26")
+mkl.version("Ryanna Libraries - Core.lua","18.05.30")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -127,7 +127,7 @@ function kthura.remaplabels(map)
          map.labelmap[lay] = map.labelmap[lay] or {}
          for label in each(labs) do 
              map.labelmap[lay][label] = map.labelmap[lay][label] or {}
-             local lm=mal.labelmap[lay][label]
+             local lm=map.labelmap[lay][label]
              lm[#lm+1]=o
          end
      end end    
