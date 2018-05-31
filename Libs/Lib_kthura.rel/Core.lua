@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.30
+        Version: 18.05.31
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.05.30")
+mkl.version("Ryanna Libraries - Core.lua","18.05.31")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -65,15 +65,21 @@ function BM.Zone(d,g)
     local Y=d.COORD.y
     local GW,GH=32,32
     local TX = Floor(X/GW)
-    local TY = Floor(Y/GH)            
+    local TY = Floor(Y/GH)
+    --[[            
+    local TW = Floor((X+W)/GW)
+    local TH = Floor((Y+H)/GH)
+    --]]  
+    -- --[[
     local TW = Ceil((X+W)/GW)
     local TH = Ceil((Y+H)/GH)
+    --]]
     local s
     local temp = {}
     local ret = {}
     -- Print "DEBUG: Blockmapping area ("+TX+","+TY+") to ("+TW+","+TH+")"
-    for AX=TX , TW do
-        for AY=TY , TH do
+    for AX=TX , TW-1 do
+        for AY=TY , TH-1 do
             --Blockmap[ax,ay]=True
             s = AX..","..AY
             if not temp[s] then ret[#ret+1] = s end temp[s]=true 
@@ -268,7 +274,20 @@ function kthura.allobjects(map)
        return list[i].o,list[i].l
     end
 end       
-    
+
+function kthura.showlabels(map,labels)
+   local lab = labels
+   if type(labels)=='string' then lab={labels} end
+   for o in kthura.allobjects(map) do
+       local v = false
+       for l1 in each(mysplit(o.LABELS,",")) do
+           for l2 in each(lab) do
+               v = v or l1==l2
+            end
+       end
+       o.VISIBLE=v        
+   end
+end    
 
 function kthura.makeclass(map)
      for lay,objl in pairs(map.MapObjects) do for o in each(objl) do kthura.makeobjectclass(o) end end
@@ -281,6 +300,7 @@ function kthura.makeclass(map)
      map.rblock = kthura.rangeblock
      map.obj = kthura.obj
      map.allobjects = kthura.allobjects
+     map.showlabels = kthura.showlabels
 end
 
 function kthura.remaptags(map)
