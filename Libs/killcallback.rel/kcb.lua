@@ -1,7 +1,7 @@
 --[[
   kcb.lua
   
-  version: 18.04.21
+  version: 18.06.02
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -132,6 +132,19 @@ function tick()
     ltick = false
     return r
 end
+
+mousecoords = love.mouse.getPosition
+
+function mousex()
+    local x,y = mousecoords()
+    return x
+end
+
+function mousey()
+    local x,y = mousecoords()
+    return y
+end
+       
 
 -- Generates a manual events.
 -- All callback functions are called if applicable.
