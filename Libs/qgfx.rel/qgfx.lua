@@ -1,7 +1,7 @@
 --[[
   qgfx.lua
   qgfx 
-  version: 18.05.14
+  version: 18.06.02
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,9 +28,14 @@ local shit = {}
 assets = assets or {}
 
 --[[
-mkl.version("Ryanna Libraries - qgfx.lua","18.05.14")
+mkl.version("Ryanna Libraries - qgfx.lua","18.06.02")
 mkl.lic    ("Ryanna Libraries - qgfx.lua","ZLib License")
 ]]
+
+local imgclass = {}
+local function img2class(img)
+    for k,v in pairs(imgclass) do img[k]=v end
+end    
 
 function WrapImage(image,horizontaal,verticaal)
    for img in each(image.images) do
@@ -42,6 +47,7 @@ end
 function LoadImage(file,assign,onlynew)
   local ret = { ox = 0, oy = 0, t="image", file=file, setWrap=WrapImage
               }
+  img2class(ret)              
   if onlynew and assets[assign] then
      return assign
   end                 
@@ -205,6 +211,7 @@ h = i.images[1]:getHeight()
 return w,h
 end
 ImageSize=ImageSizes
+imgclass.Sizes=ImageSizes
 
 
 function ImageLoaded(imgtag)
@@ -212,14 +219,16 @@ function ImageLoaded(imgtag)
 end    
 
 function ImageWidth(img)
-local w,h = ImageSizes(img)
-return w
+  local w,h = ImageSizes(img)
+  return w
 end
+imgclass.width=Imagewidth
 
 function ImageHeight(img)
 local w,h = ImageSizes(img)
 return h
 end
+imgclass.height=ImageHeight
 
 function cpImg(img)
 local ret = {}
@@ -232,7 +241,8 @@ local i = (({ ['string'] = function() return assets[img] end,
               ['table']  = function() return img end })[type(img)])()
 i.ox = x or i.ox
 i.oy = y or i.oy
-end       
+end      
+imgclass.hot=Hot 
 
 function QHot(img,qtag)
     local iw,ih = ImageSizes(img)
@@ -249,7 +259,7 @@ function QHot(img,qtag)
     elseif qtag=='rb' then hx=iw   hy=ih end
     Hot(img,hx,hy)
 end    
-
+imgclass.qhot=QHot
 
 function HotCenter(img)
 local i = (({ ['string'] = function() assert(assets[img],"No image on: "..img) return assets[img] end,
@@ -260,7 +270,7 @@ end; shit.HotCenter = HotCenter
 
 QText=love.graphics.print
 shit.QText=QText
-
+imgclass.hotcenter=hotcenter
 
 function Text2Img(txt,font,hot)
    assert(txt,"No text to convert into an image")
@@ -270,6 +280,7 @@ function Text2Img(txt,font,hot)
    ret.image=td
    ret.images={td}
    QHot(ret,hot or 'lt')
+   img2class(ret)
    return ret              
 end
 return shit
