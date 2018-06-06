@@ -1,7 +1,7 @@
 --[[
   flow.lua
   Flow
-  version: 18.01.07
+  version: 18.06.06
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -50,6 +50,11 @@ function flow.get(a)
    return currentflow
 end
 
+function flow.undef(name)
+    libdestroy(byname[name])
+    byname[name]=nil
+end
+
 function flow.define(name,flow)
    assert(type(name)=='string',"string expected for the first parameter; not "..type(name))
    assert(type(flow)=='table',"table expected for second parameter; not "..type(flow))
@@ -57,10 +62,6 @@ function flow.define(name,flow)
    byname[name]=flow
 end
 
-function flow.undef(name)
-    libdestroy(byname[name])
-    byname[name]=nil
-end
 
 function flow.exists(name)
    return byname[name]~=nil
