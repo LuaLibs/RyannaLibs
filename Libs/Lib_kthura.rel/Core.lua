@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.31
+        Version: 18.06.25
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.05.31")
+mkl.version("Ryanna Libraries - Core.lua","18.06.25")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -263,7 +263,7 @@ function kthura.makeobjectclass(kthuraobject)
 end
 
 function kthura.allobjects(map)
-    list = {}
+    local list = {}
     local i=0
     for lay,objl in spairs(map.MapObjects) do for o in each(objl) do
         list[#list+1]={o=o,l=lay}
@@ -288,6 +288,21 @@ function kthura.showlabels(map,labels)
        o.VISIBLE=v        
    end
 end    
+
+function kthura.hidelabels(map,labels)
+   local lab = labels
+   if type(labels)=='string' then lab={labels} end
+   for o in kthura.allobjects(map) do
+       local v = false
+       for l1 in each(mysplit(o.LABELS,",")) do
+           for l2 in each(lab) do
+               v = v or l1==l2
+            end
+       end
+       o.VISIBLE=not(v)        
+   end
+end    
+
 
 function kthura.makeclass(map)
      for lay,objl in pairs(map.MapObjects) do for o in each(objl) do kthura.makeobjectclass(o) end end
