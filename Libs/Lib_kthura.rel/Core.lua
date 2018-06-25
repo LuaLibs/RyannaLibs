@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.06.25
+        Version: 18.06.26
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.06.25")
+mkl.version("Ryanna Libraries - Core.lua","18.06.26")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -21,7 +21,7 @@ mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 local kthura ={}
 -- $FI  
 
-
+kthura.pathfindwarnings=false -- When you need these warnings, simply turn them back on by making this true
 kthura.searcher='DIJKSTRA' -- For now the default searcher. I just had to pick one ;)
 
 local BM={}
@@ -396,13 +396,13 @@ function actorclass:WalkTo(a1,a2)
     parent.pathfinder[self.LAYER] = parent.pathfinder[self.LAYER] or PathFinder(parent.jumpergrid[self.LAYER], kthura.searcher, 0)
     -- This one would crash if a use requests stuff OUTSIDE the field, so let's do that elseway -- self.path = parent.pathfinder:getPath(math.floor(self.COORD.x/32),math.floor(self.COORD.y/32),x,y)
     local pathyes,pathdata = pcall(mgpath,self,x,y)
-    if not pathyes then
+    if (not pathyes) and kthura.pathfinderwarnings then
        print("WARNING!",pathdata)
        if console then console.write("WARNING! ",255,180,0) console.writeln(pathdata) end
        self.walking=false
        return
     end
-    if console and (not self.path )then console.write("WARNING! ",255,180,0) console.writeln("nil received for pathdata") end
+    if console and (not self.path ) and kthura.pathfinderwarnings then console.write("WARNING! ",255,180,0) console.writeln("nil received for pathdata") end
     self.path = pathdata
     if not self.path then return false end -- pathfinding failed
     self.nodes ={}
