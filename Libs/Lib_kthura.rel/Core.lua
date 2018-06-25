@@ -204,6 +204,7 @@ function kthura.buildblockmap(map)
   map.blockmap = {}    
   map.jumpergrid = {}  
   map.bmsizes = {}
+  map.pathfinder = {}
   for pi in each(p) do for lay,objl in pairs(map.MapObjects) do
       map.blockmap[lay] = map.blockmap[lay] or {}
       map.bmsizes[lay] = map.bmsizes[lay] or {width=0,height=0}
@@ -275,7 +276,7 @@ function kthura.allobjects(map)
     end
 end       
 
-function kthura.showlabels(map,labels)
+function kthura.showlabels(map,labels,only)
    local lab = labels
    if type(labels)=='string' then lab={labels} end
    for o in kthura.allobjects(map) do
@@ -285,11 +286,15 @@ function kthura.showlabels(map,labels)
                v = v or l1==l2
             end
        end
-       o.VISIBLE=v        
+       if only then
+          if v then o.VISIBLE=true end
+       else       
+          o.VISIBLE=v
+       end        
    end
 end    
 
-function kthura.hidelabels(map,labels)
+function kthura.hidelabels(map,labels,only)
    local lab = labels
    if type(labels)=='string' then lab={labels} end
    for o in kthura.allobjects(map) do
@@ -299,7 +304,11 @@ function kthura.hidelabels(map,labels)
                v = v or l1==l2
             end
        end
-       o.VISIBLE=not(v)        
+       if only then
+          if v then o.VISIBLE=false end
+       else
+          o.VISIBLE=not(v)
+       end        
    end
 end    
 
@@ -316,6 +325,7 @@ function kthura.makeclass(map)
      map.obj = kthura.obj
      map.allobjects = kthura.allobjects
      map.showlabels = kthura.showlabels
+     map.hidelabels = kthura.hidelabels
 end
 
 function kthura.remaptags(map)
@@ -388,11 +398,11 @@ function actorclass:WalkTo(a1,a2)
     local pathyes,pathdata = pcall(mgpath,self,x,y)
     if not pathyes then
        print("WARNING!",pathdata)
-       if console then console.write("WARNING!",255,180,0) console.writeln(pathdata) end
+       if console then console.write("WARNING! ",255,180,0) console.writeln(pathdata) end
        self.walking=false
        return
     end
-    if console and (not self.path )then console.write("WARNING!",255,180,0) console.writeln("nil received for pathdata") end
+    if console and (not self.path )then console.write("WARNING! ",255,180,0) console.writeln("nil received for pathdata") end
     self.path = pathdata
     if not self.path then return false end -- pathfinding failed
     self.nodes ={}
