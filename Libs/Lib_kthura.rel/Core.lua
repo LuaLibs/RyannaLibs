@@ -6,14 +6,14 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.06.26
+        Version: 18.07.02
 ]]
 
 -- $USE libs/errortag
 -- $USE libs/nothing
 
 --[[
-mkl.version("Ryanna Libraries - Core.lua","18.06.26")
+mkl.version("Ryanna Libraries - Core.lua","18.07.02")
 mkl.lic    ("Ryanna Libraries - Core.lua","Mozilla Public License 2.0")
 
 ]]
@@ -409,6 +409,10 @@ function actorclass:WalkTo(a1,a2)
     self.node=1
     local tnodes = {}
     local count=0
+    if  (not self.path.nodes ) then
+        if console and kthura.pathfinderwarnings then console.write("WARNING! ",255,180,0) console.writeln("nil received for path:nodes method") end
+        return
+    end
     for node, count in self.path:nodes() do
         --count=#self.nodes+1
         tnodes[count]={x=node:getX(),y=node:getY()}
