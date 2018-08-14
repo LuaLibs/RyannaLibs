@@ -1,7 +1,7 @@
 --[[
   rpg.lua
   
-  version: 18.04.27
+  version: 18.08.14
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -272,6 +272,13 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
    local lua = ".lua"
    assert ( ch ,"Character doesn't exist\nRPGChar.Stat\nchar="..char.."\nStat="..stat)
    local st = ch:Stat(stat) -- :RPGStat = ch.stat(stat)
+   -- --[[
+   if not st then
+     for k,v in spairs(ch.Stats) do
+         CSay(serialize(k,v))
+     end
+   end
+   --]] 
    assert(st  ,"Stat doesn't exist\nRPGChar.Stat\nchar="..char.."\nStat="..stat)
    if st.ScriptFile and st.ScriptFile~="" and st.CallFunction and (not RPG_IgnoreScripts) then 
     --Me.Char = Char
@@ -619,7 +626,7 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   function api:PointsExists(char,points)
    local ch = grabchar(char)
    if not ch then 
-     ConsoleWrite("WARNING! PointsExist(~q"+Char+"~q,~q"+points+"~q): Character doesn't exist. Returning False anyway",255,180,0)
+     ConsoleWrite("WARNING! PointsExist(~q"+char+"~q,~q"+points+"~q): Character doesn't exist. Returning False anyway",255,180,0)
      return false
    end -- EndIf
    return ch.Points[points]~=nil - MapContains(ch.points,points)
