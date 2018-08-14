@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.05.26
+        Version: 18.08.14
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.05.26")
+mkl.version("Ryanna Libraries - Draw.lua","18.08.14")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -142,7 +142,19 @@ local drawclass = {
               ABX = Floor(self.COORD.x/32) --(A.X/A.parent.BlockmapgridW)
               ABY = Floor(self.COORD.y/32) --(A.Y/A.parent.BlockmapgridH)
               cnode=A.nodes[A.node]
-              assert(cnode,"NIL NIL NIL!!!!\n"..serialize('nodes',A.nodes).."\n"..serialize('node',A.node))    
+              if self.WalkNilCrash then
+                 assert(cnode,"NIL NIL NIL!!!!\n"..serialize('nodes',A.nodes).."\n"..serialize('node',A.node))
+              else
+                 if not cnode then 
+                    console.writeln("WARNING",255,0,0)
+                    console.writeln("NIL node",255,180)
+                    console.writeln(serialize('nodes',A.nodes),250,190)    
+                    console.writeln(serialize('node',A.node),240,200)
+                    A.walking=false
+                    A.moving=false
+                    return
+                 end
+              end
               TBX,TBY=cnode.x,cnode.y --ReadWaySpot A.FoundPath,A.WalkSpot,TBX,TBY
               --'Print "ABX = "+ABX+"; TBX = "+TBX+"; ABY = "+ABY+"; TBY = "+TBY+"; Spot = "+A.WalkSpot+"; Length = "+LengthWay(A.FoundPath) ' debugline
               if ABX==Floor(TBX) and ABY==Floor(TBY) then
