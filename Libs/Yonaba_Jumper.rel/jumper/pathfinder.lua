@@ -56,7 +56,8 @@ if (...) then
 	-- <li>DIAGONAL</li>
 	-- @mode Modes
 	-- @see Pathfinder:getModes
-  local searchModes = {['DIAGONAL'] = true, ['ORTHOGONAL'] = true}
+   local searchModes = {['DIAGONAL'] = true, ['ORTHOGONAL'] = true}
+  --local searchModes = {['DIAGONAL'] = false, ['ORTHOGONAL'] = true}
 
   -- Performs a traceback from the goal node to the start node
   -- Only happens when the path was found
@@ -92,7 +93,7 @@ if (...) then
 	  newPathfinder:setGrid(grid)
     newPathfinder:setFinder(finderName)
     newPathfinder:setWalkable(walkable)
-    newPathfinder:setMode('DIAGONAL')
+    newPathfinder:setMode('ORTHOGONAL') --'DIAGONAL')
     newPathfinder:setHeuristic('MANHATTAN')
     newPathfinder:setTunnelling(false)
     return newPathfinder
