@@ -6,13 +6,13 @@
 	Mozilla Public License, v. 2.0. If a copy of the MPL was not 
 	distributed with this file, You can obtain one at 
 	http://mozilla.org/MPL/2.0/.
-        Version: 18.08.14
+        Version: 18.10.13
 ]]
 
 -- $USE Libs/qgfx
 
 --[[
-mkl.version("Ryanna Libraries - Draw.lua","18.08.14")
+mkl.version("Ryanna Libraries - Draw.lua","18.10.13")
 mkl.lic    ("Ryanna Libraries - Draw.lua","Mozilla Public License 2.0")
 ]]
 
@@ -246,7 +246,7 @@ local drawclass = {
          draw = function(o,cx,cy)
             animate(o)
             ktcolor(o)
-            QuadImage(o.LoadedTexture,o.QUAD,o.COORD.x-cx,o.COORD.y-cy)
+            QuadImage(o.LoadedTexture,o.QUAD,o.COORD.x-cx,o.COORD.y-cy,o.FRAME or 1)
          end
     },
     Exit = {LoadTexture=niets,draw=niets}    
