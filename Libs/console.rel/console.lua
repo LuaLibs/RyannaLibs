@@ -1,7 +1,7 @@
 --[[
   console.lua
   
-  version: 18.02.02
+  version: 18.11.24
   Copyright (C) 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -86,7 +86,7 @@ function con.log(atxt,r,g,b)
    if not love.filesystem.isFile(logfile) then
       love.filesystem.write(logfile,"<style>body{ color: #ffffff; background-color:#000000; font-family: Courier</style>\n")
    end
-   love.filesystem.append(logfile,"<span style='color: rgb("..(r or 255)..","..(g or 255)..","..(b or 255)..");'>"..txt.."</span>")   
+   love.filesystem.append(logfile,"\t<span style='color: rgb("..(r or 255)..","..(g or 255)..","..(b or 255)..");'>"..txt.."</span>\n")   
 end   
    
 
@@ -161,5 +161,8 @@ function con.sback() -- Just shows the loaded background if available.
       love.graphics.draw(con.background,con.backquad,0,0)
    end
 end
+   
+con.Write=con.write;
+con.WriteLn=con.writeln;
    
 return con
