@@ -5,7 +5,6 @@
 
 local http = require("socket.http")
 
-
 AGJError = ""
 
 local anna_debug = false
