@@ -1,7 +1,7 @@
 --[[
   Scenario.lua
   Scenario reader for Ryanna, based on the reader for GALE based interpreters.
-  version: 18.01.15
+  version: 18.11.24
   Copyright (C) 2016, 2017, 2018 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -81,9 +81,9 @@ for LineNumber,Line in ipairs(crap) do
              -- CSay("ReadLine: "..L.." >> Prefix: "..Prefix) -- Debug line.
              if (not WorkRec) and Prefix~="@" and Prefix~="-" then error("Trying to assign data, while no boxtext record has yet been created in line #"..LineNumber) end
              if Prefix=="@" then
-                WorkRec = { Lines = {} }
+                WorkRec = { Lines = {}, Header="", PicDir="", PicSpc="", SoundFile="" }
                 table.insert(ret[DLine],WorkRec)                
-             else
+             elseif #L>1 then
                 ProcessBLine(WorkRec,Prefix,DLine)   
                 end
           else -- @DEFAULT
