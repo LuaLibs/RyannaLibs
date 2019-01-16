@@ -20,7 +20,7 @@
 return function(param1,param2)
     local list = {}
     local j = jcr
-    local prefix = param2
+    local prefix = param1
     if param2 then
        if type(param1)=="table" then
           j = param1
@@ -38,5 +38,6 @@ return function(param1,param2)
     for file,_ in spairs(j.entries) do
         if prefixed(file,prefix:upper()) then list[#list+1]=file end
     end
+    -- CSay(serialize("FileFist",list)) -- debug
     return list[math.random(1,#list)]
 end    
