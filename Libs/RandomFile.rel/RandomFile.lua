@@ -17,6 +17,9 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 ]]
+
+local sprintf = string.format
+
 return function(param1,param2)
     local list = {}
     local j = jcr
@@ -38,7 +41,7 @@ return function(param1,param2)
     for file,_ in spairs(j.entries) do
         if prefixed(file,prefix:upper()) then list[#list+1]=file end
     end
-    assert(#list>0,printf("RandomPicture(%s,%s): No files found with the desired prefix",param1,param2))
+    assert(#list>0,sprintf("RandomPicture(%s,%s): No files found with the desired prefix",param1,param2))
     -- CSay(serialize("FileFist",list)) -- debug
     return list[math.random(1,#list)]
 end    
