@@ -1,8 +1,8 @@
 --[[
   gamevar.lua
   
-  version: 18.02.25
-  Copyright (C) 2018 Jeroen P. Broks
+  version: 19.01.16
+  Copyright (C) 2018, 2019 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
   arising from the use of this software.
@@ -64,6 +64,16 @@ function vars.done(self,tag)
     self:D(tag,true)
     return ret
 end
+
+function vars:BOOL(tag)
+    if prefixed(tag,"&") then
+       if self.v[tag] then return true else return false end
+    else
+       error("BOOL method only for & prefixed vars")
+    end
+end
+
+function BoolVar(tag) return vars:BOOL(tag) end           
 
 function Done(tag) return vars:done(tag) end
 Var.Done=Done
