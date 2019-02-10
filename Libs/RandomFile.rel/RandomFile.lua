@@ -1,7 +1,7 @@
 --[[
   RandomFile.lua
   Random File
-  version: 19.01.16
+  version: 19.02.09
   Copyright (C) 2019 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
