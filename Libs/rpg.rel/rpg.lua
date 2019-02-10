@@ -1,8 +1,8 @@
 --[[
   rpg.lua
   
-  version: 18.08.14
-  Copyright (C) 2018 Jeroen P. Broks
+  version: 19.02.10
+  Copyright (C) 2018, 2019 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
   arising from the use of this software.
@@ -55,7 +55,7 @@ local GALE_MS = {} -- Used to 'fake' a GALE MS environment
 -- Private
 local Chat=true -- Const Chat = True
 --Public
-MustHavePortrait = True
+MustHavePortrait = true
 
 -- Global RPGJCR:TJCRDir
 RPGJCRDir = ""
@@ -239,6 +239,13 @@ local api = {} -- Type RPGLuaAPI -- ' BLD: Object RPGChar\nThis object contains 
   If ch.Portrait DrawImage ch.Portrait,x,y 'Else Print "No picture on: "+Char
   End Method
   ]]
+  
+  function api:IsInParty(tag)
+     for i,t in ipairs(RPGParty) do
+         if t==tag then return i end
+     end
+     return nil
+  end
 
   function api:TrueStat(char,stat) -- Method TrueStat:RPGStat(char$,stat$) ' The true stats and its values. This is not documented as using this is pretty dangerous and should only be done when you know what you are doing.
     local ch=grabchar(char) -- local ch = grabchar(char)
