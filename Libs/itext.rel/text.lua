@@ -1,8 +1,8 @@
 --[[
   text.lua
   
-  version: 18.03.08
-  Copyright (C) 2018 Jeroen P. Broks
+  version: 19.02.10
+  Copyright (C) 2018, 2019 Jeroen P. Broks
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
   arising from the use of this software.
@@ -48,12 +48,23 @@ end
 local function getneededletters(text)
     local ret = {}
     local wait=0
+    local dbg = false
     for i=1,#text do
+        if dbg then CSay(sprintf("Char %d of %d > %s",i,#text,mid(text,i,1))) end
         if wait>0 then
            wait=wait-1
+           if dbg then CSay(sprintf("Wait down to %d",wait)) end
+        elseif mid(text,i,1)=="|" and #text<i+2 then
+           -- Nothing should happen here!
         elseif mid(text,i,1)=="|" then
-           currentfont.characters[mid(text,i,2)] = currentfont.characters[mid(text,i,2)] or LoadImage(dir.."/"..string.byte(mid(text,i+1,1)).."."..string.byte(mid(text,i+2,1))..".png")
-           ret[#ret+1]=currentfont.characters[mid(text,i,2)]
+           if dbg then CSay("Enountered multi_tag:"..mid(text,i,3)) end
+           currentfont.characters[mid(text,i+1,2)] = currentfont.characters[mid(text,i+1,2)] 
+            or LoadImage(
+                currentfont.dir.."/"..
+                string.byte(mid(text,i+1,1))..
+                "."..string.byte(mid(text,i+2,1))..".png"
+            )
+           ret[#ret+1]=currentfont.characters[mid(text,i+1,2)]
            wait=2
         else
             local b = mid(text,i,1):byte()
